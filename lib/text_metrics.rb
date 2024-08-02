@@ -3,6 +3,7 @@
 require "text_metrics/version"
 require "text_metrics/processors/french"
 require "text_metrics/processors/american_english"
+require "forwardable"
 
 module TextMetrics
   class Error < StandardError; end
