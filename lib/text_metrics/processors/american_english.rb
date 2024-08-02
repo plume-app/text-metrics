@@ -23,7 +23,7 @@ module TextMetrics
       private
 
       def hyphen_dictionary
-        @hyphen_dictionary ||= Text::Hyphen.new(language: "en_US", left: 0, right: 0)
+        @hyphen_dictionary ||= Text::Hyphen.new(language: "en_us", left: 0, right: 0)
       end
     end
   end
