@@ -1,0 +1,23 @@
+require:
+  - standard
+
+inherit_gem:
+  standard: config/base.yml
+
+AllCops:
+  Exclude:
+    - "bin/*"
+    - "tmp/**/*"
+    - "Gemfile"
+    - "vendor/**/*"
+    - "gemfiles/**/*"
+    - "lib/.rbnext/**/*"
+    - "lib/generators/**/templates/*.rb"
+    - ".github/**/*"
+  DisplayCopNames: true
+  SuggestExtensions: false
+  NewCops: disable
+  TargetRubyVersion: 3.0
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
