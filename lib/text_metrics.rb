@@ -10,7 +10,10 @@ module TextMetrics
 
   class TextMetrics
     extend Forwardable
-    def_delegators :text_metrics_processor, :word_count
+    def_delegators :text_metrics_processor, :word_count, :char_count, :syllable_count,
+      :sentence_count, :avg_sentence_length, :avg_syllables_per_word,
+      :avg_letter_per_word, :avg_words_per_sentence, :flesch_reading_ease,
+      :flesch_kincaid_grade, :all
 
     PROCESSORS = {
       "fr" => Processors::French,
