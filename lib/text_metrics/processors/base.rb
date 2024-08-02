@@ -13,57 +13,60 @@ module TextMetrics
 
       def all
         @all ||= {
-          word_count: word_count,
-          char_count: char_count,
-          sentence_count: sentence_count,
-          syllable_count: syllable_count,
-          avg_sentence_length: avg_sentence_length,
-          avg_syllables_per_word: avg_syllables_per_word,
-          avg_letter_per_word: avg_letter_per_word,
-          avg_words_per_sentence: avg_words_per_sentence,
+          words_count: words_count,
+          characters_count: characters_count,
+          sentences_count: sentences_count,
+          syllables_count: syllables_count,
+          syllables_per_word_average: syllables_per_word_average,
+          letters_per_word_average: letters_per_word_average,
+          words_per_sentence_average: words_per_sentence_average,
+          characters_per_sentence_average: characters_per_sentence_average,
           flesch_reading_ease: flesch_reading_ease,
           flesch_kincaid_grade: flesch_kincaid_grade
         }
       end
 
-      def char_count(ignore_spaces: true)
+      # _count methods
+      def characters_count(ignore_spaces: true)
         ignore_spaces ? text.delete(" ").length : text.length
       end
 
-      def word_count(remove_punctuation: true)
-        remove_punctuation ? words.size : text.split.size
+      def words_count
+        words.size
       end
 
-      def sentence_count
-        text.scan(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|!)(?=\s|$)/).size
+      def sentences_count
+        sentences.size
       end
 
-      def syllable_count
+      def syllables_count
         return 0 if text.empty?
 
         words.sum { |word| hyphen_dictionary.visualise(word).count("-") + 1 }
       end
 
-      def avg_sentence_length
-        (word_count.to_f / sentence_count).round(1)
+      # _average methods
+
+      def syllables_per_word_average
+        (syllables_count.to_f / words_count).round(1)
       rescue ZeroDivisionError
         0.0
       end
 
-      def avg_syllables_per_word
-        (syllable_count.to_f / word_count).round(1)
+      def letters_per_word_average
+        (characters_count.to_f / words_count).round(2)
       rescue ZeroDivisionError
         0.0
       end
 
-      def avg_letter_per_word
-        (char_count.to_f / word_count).round(2)
+      def words_per_sentence_average
+        (words_count.to_f / sentences_count).round(2)
       rescue ZeroDivisionError
         0.0
       end
 
-      def avg_words_per_sentence
-        (word_count.to_f / sentence_count).round(2)
+      def characters_per_sentence_average
+        (characters_count.to_f / sentences_count).round(2)
       rescue ZeroDivisionError
         0.0
       end
@@ -76,6 +79,10 @@ module TextMetrics
 
       def words
         @words ||= text.split
+      end
+
+      def sentences
+        @sentences ||= text.scan(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|!)(?=\s|$)/)
       end
     end
   end

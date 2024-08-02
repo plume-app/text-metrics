@@ -8,36 +8,31 @@ class TextMetrics::Processors::BaseTest < Minitest::Test
     @processor = TextMetrics::Processors::Base.new(text: @very_easy_text)
   end
 
-  def test_word_count
-    count = @processor.word_count
+  def test_words_count
+    count = @processor.words_count
     assert_equal 20, count
   end
 
-  def test_char_count
-    count = @processor.char_count
+  def test_characters_count
+    count = @processor.characters_count
     assert_equal 83, count
 
-    count = @processor.char_count(ignore_spaces: false)
+    count = @processor.characters_count(ignore_spaces: false)
     assert_equal 102, count
   end
 
-  def test_sentence_count
-    count = @processor.sentence_count
+  def test_sentences_count
+    count = @processor.sentences_count
     assert_equal 5, count
   end
 
-  def test_avg_sentence_length
-    avg = @processor.avg_sentence_length
-    assert_equal 4.0, avg
-  end
-
-  def test_avg_letter_per_word
-    avg = @processor.avg_letter_per_word
+  def test_letters_per_word_average
+    avg = @processor.letters_per_word_average
     assert_equal 4.15, avg
   end
 
-  def test_avg_words_per_sentence
-    avg = @processor.avg_words_per_sentence
+  def test_words_per_sentence_average
+    avg = @processor.words_per_sentence_average
     assert_equal 4.0, avg
   end
 end

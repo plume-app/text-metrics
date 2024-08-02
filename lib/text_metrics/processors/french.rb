@@ -6,16 +6,16 @@ module TextMetrics
   module Processors
     class French < TextMetrics::Processors::Base
       def flesch_reading_ease
-        sentence_length = avg_sentence_length
-        syllables_per_word = avg_syllables_per_word
+        sentence_length = words_per_sentence_average
+        syllables_per_word = syllables_per_word_average
         flesch = 206.835 - 1.015 * sentence_length - 73.6 * syllables_per_word
 
         [100, flesch.round(2)].min
       end
 
       def flesch_kincaid_grade
-        sentence_length = avg_sentence_length
-        syllables_per_word = avg_syllables_per_word
+        sentence_length = words_per_sentence_average
+        syllables_per_word = syllables_per_word_average
         flesch = (0.55 * sentence_length) + (11.76 * syllables_per_word) - 15.79
 
         flesch.round(1)

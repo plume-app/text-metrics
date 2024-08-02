@@ -10,10 +10,10 @@ module TextMetrics
 
   class TextMetrics
     extend Forwardable
-    def_delegators :text_metrics_processor, :word_count, :char_count, :syllable_count,
-      :sentence_count, :avg_sentence_length, :avg_syllables_per_word,
-      :avg_letter_per_word, :avg_words_per_sentence, :flesch_reading_ease,
-      :flesch_kincaid_grade, :all
+    def_delegators :text_metrics_processor, :words_count, :characters_count, :syllables_count,
+      :sentences_count, :words_per_sentence_average, :syllables_per_word_average,
+      :letters_per_word_average, :words_per_sentence_average, :characters_per_sentence_average,
+      :flesch_reading_ease, :flesch_kincaid_grade, :all
 
     PROCESSORS = {
       "fr" => Processors::French,
@@ -35,7 +35,7 @@ module TextMetrics
     end
   end
 
-  def self.new(text:, language:)
+  def self.new(text:, language: "en_US")
     TextMetrics.new(text: text, language: language)
   end
 end
