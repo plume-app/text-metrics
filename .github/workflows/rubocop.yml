@@ -1,10 +1,6 @@
 name: Lint Ruby
 
-on:
-  push:
-    branches:
-    - master
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   rubocop:
@@ -12,12 +8,11 @@ jobs:
     env:
       BUNDLE_GEMFILE: gemfiles/rubocop.gemfile
     steps:
-    - uses: actions/checkout@v4
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.3
-        bundler-cache: true
-    - name: Lint Ruby code with RuboCop
-      run: |
-        bundle exec rubocop
-
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+      - name: Lint Ruby code with RuboCop
+        run: |
+          bundle exec rubocop
