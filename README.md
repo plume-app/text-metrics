@@ -40,7 +40,7 @@ gem "text-metrics", github: "plume-app/text-metrics", branch: "main"
 
 ### Supported Ruby versions
 
-- Ruby (MRI) >= 3.0.0
+- Ruby (MRI) >= 3.1.0
 
 ## Usage
 
