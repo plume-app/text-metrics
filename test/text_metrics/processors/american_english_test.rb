@@ -31,4 +31,39 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 92.39, all[:flesch_reading_ease]
     assert_equal 1.5, all[:flesch_kincaid_grade]
   end
+
+  def test_flesch_reading_ease_75
+    text = "The sun was shining brightly in the clear blue sky. The children ran around the playground, laughing and playing with their friends. It was a perfect day for a picnic, and families spread out blankets on the grass, enjoying the warm weather."
+    @processor = TextMetrics::Processors::AmericanEnglish.new(text: text)
+    assert @processor.flesch_reading_ease >= 70
+    assert @processor.flesch_reading_ease <= 80
+  end
+
+  # "As the day progressed, the sun began to dip below the horizon, casting long shadows across the park. The children reluctantly gathered their toys, knowing that it was time to head home. Their laughter gradually faded as the cool evening breeze picked up, signaling the end of a pleasant afternoon."
+  def test_flesch_reading_ease_65
+    text = "As the day progressed, the sun began to dip below the horizon, casting long shadows across the park. The children reluctantly gathered their toys, knowing that it was time to head home. Their laughter gradually faded as the cool evening breeze picked up, signaling the end of a pleasant afternoon."
+    @processor = TextMetrics::Processors::AmericanEnglish.new(text: text)
+    assert @processor.flesch_reading_ease >= 60
+    assert @processor.flesch_reading_ease <= 70
+  end
+
+  def test_flesch_reading_ease_40
+    text = "The gradual transition from day to night brings a sense of calm and reflection. As the sun sets, the world seems to pause momentarily, allowing individuals a brief respite from their daily activities. This period, often referred to as twilight, is marked by a unique interplay of light and shadow, creating an atmosphere that is both serene and contemplative."
+    @processor = TextMetrics::Processors::AmericanEnglish.new(text: text)
+    assert @processor.flesch_reading_ease >= 40
+    assert @processor.flesch_reading_ease <= 60
+  end
+
+  def test_flesch_reading_ease_25
+    text = "The juxtaposition of light and dark during twilight creates a transient, liminal space, often imbued with a sense of both anticipation and nostalgia. This temporal interstice, though brief, has been the subject of extensive literary and artistic exploration, as it encapsulates the ephemeral nature of existence itself."
+    @processor = TextMetrics::Processors::AmericanEnglish.new(text: text)
+    assert @processor.flesch_reading_ease >= 20
+    assert @processor.flesch_reading_ease <= 30
+  end
+
+  def test_flesch_reading_ease_10
+    text = "The dichotomous nature of twilight, wherein diurnal and nocturnal elements coexist in a fleeting equilibrium, offers a fertile ground for metaphysical inquiry. This ephemeral period, often characterized by a sense of transience and impermanence, serves as a poignant reminder of the inexorable passage of time and the transient nature of human existence"
+    @processor = TextMetrics::Processors::AmericanEnglish.new(text: text)
+    assert @processor.flesch_reading_ease <= 10
+  end
 end

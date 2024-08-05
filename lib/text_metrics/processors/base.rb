@@ -5,10 +5,11 @@ require "text/hyphen"
 module TextMetrics
   module Processors
     class Base
-      attr_reader :text
+      attr_reader :text, :with_syllable_exceptions
 
-      def initialize(text:)
-        @text = text.downcase.squeeze(" ")
+      def initialize(text:, with_syllable_exceptions: true)
+        @text = text&.downcase&.squeeze(" ") || ""
+        @with_syllable_exceptions = with_syllable_exceptions
       end
 
       def all
@@ -78,7 +79,7 @@ module TextMetrics
       end
 
       def words
-        @words ||= text.split
+        @words ||= text.gsub(/[.?!;,]/, "").split
       end
 
       def sentences
