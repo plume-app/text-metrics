@@ -14,20 +14,21 @@ At this point the main language supported are English and French.
 
 _Basic metrics:_
 
-[x] words count
-[x] characters count
-[x] sentences count
-[x] syllables per word average
-[x] letters per word average
-[x] sentence length average
-[x] sentence length (characters) average
+
+- [x] words count
+- [x] characters count
+- [x] sentences count
+- [x] syllables per word average
+- [x] letters per word average
+- [x] sentence length average
+- [x] sentence length (characters) average
 
 _Readability tests:_
 
-[x] Flesch Reading Ease
-[x] Flesch-Kincaid Grade Level
-[ ] Gunning Fog Index
-[ ] Coleman-Liau Index
+- [x] Flesch Reading Ease
+- [x] Flesch-Kincaid Grade Level
+- [ ] Gunning Fog Index
+- [ ] Coleman-Liau Index
 
 ## Installation
 
