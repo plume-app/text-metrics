@@ -6,7 +6,9 @@ require "yaml"
 module TextMetrics
   module Processors
     class French < TextMetrics::Processors::Base
-      SYLLABLE_EXCEPTIONS = YAML.load_file("lib/text_metrics/dictionnaries/french_word_syllable_exceptions.yml").freeze
+      GEM_PATH = File.dirname(__FILE__, 2).freeze
+      SYLLABLE_EXCEPTIONS_PATH = File.join(GEM_PATH, "dictionnaries/french_word_syllable_exceptions.yml").freeze
+      SYLLABLE_EXCEPTIONS = YAML.load_file(SYLLABLE_EXCEPTIONS_PATH).freeze
 
       def syllables_count
         words.sum { |word| count_syllables_in_word(word) }
