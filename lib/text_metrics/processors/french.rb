@@ -10,10 +10,6 @@ module TextMetrics
       SYLLABLE_EXCEPTIONS_PATH = File.join(GEM_PATH, "dictionnaries/french_word_syllable_exceptions.yml").freeze
       SYLLABLE_EXCEPTIONS = YAML.load_file(SYLLABLE_EXCEPTIONS_PATH).freeze
 
-      def syllables_count
-        words.sum { |word| count_syllables_in_word(word) }
-      end
-
       def flesch_reading_ease
         sentence_length = words_per_sentence_average
         syllables_per_word = syllables_per_word_average

@@ -41,7 +41,11 @@ module TextMetrics
       end
 
       def syllables_count
-        raise NotImplementedError
+        words.sum { |word| count_syllables_in_word(word) }
+      end
+
+      def poly_syllabes_count
+        words.count { |word| count_syllables_in_word(word) >= 3 }
       end
 
       # _average methods
@@ -92,12 +96,6 @@ module TextMetrics
 
       def sentences
         @sentences ||= text.scan(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|!)(?=\s|$)/)
-      end
-
-      private
-
-      def hyphen_dictionary
-        raise NotImplementedError
       end
     end
   end

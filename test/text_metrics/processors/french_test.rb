@@ -70,6 +70,16 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 0, errors.size
   end
 
+  def test_poly_syllabes_count
+    text = "immeubles"
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 1, @processor.poly_syllabes_count
+
+    text = "arbre"
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 0, @processor.poly_syllabes_count
+  end
+
   def test_flesch_reading_ease_95
     text = "Le chat dort. Il fait beau. Les oiseaux chantent dans les arbres. C'est l'été. Il n'y a pas de nuages."
     @processor = TextMetrics::Processors::French.new(text: text)
