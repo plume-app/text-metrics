@@ -5,6 +5,18 @@ require "test_helper"
 class TextMetrics::Processors::FrenchTest < Minitest::Test
   def setup
     @very_easy_text = "Le chat dort. Il fait beau. Les oiseaux chantent dans les arbres. C'est l'été. Il n'y a pas de nuages."
+    @long_easy_text = <<~HEREDOC
+      Mettre en place un concours d’écriture au sein de la classe permet de planifier de manière hyper concrète l’écrit de la phase d’idéation (souvent avec des contraintes) à la production finale. La dimension “concours” peut permettre une grande émulation au sein de la classe et favoriser l’entraide entre les élèves pour arriver à un but commun. Que ce soit au primaire ou au collège, ces événements offrent bien plus qu’une simple compétition : ils nourrissent la créativité, renforcent la confiance en soi et encouragent l’excellence dans l’art de la composition littéraire. L’inscription à un concours motive les élèves à donner le meilleur d’eux-mêmes. Savoir que leur travail sera évalué par des pairs ou des professionnels les pousse à se surpasser, à peaufiner leurs textes et à rechercher l’excellence. Cette motivation intrinsèque alimente un cercle vertueux où chaque élève cherche à s’améliorer continuellement pour atteindre l’excellence.
+
+      Mener un projet d’écriture fédérateur au sein de la classe grâce à un concours d’écriture
+      Dans le domaine de l’éducation, l’écriture occupe une place centrale dans le développement des compétences linguistiques et créatives des élèves. Cependant, susciter et maintenir l’intérêt des élèves pour cet exercice peut parfois représenter un véritable défi.
+
+      Une recherche menée par Graham et Hebert (2010) a révélé que les projets d’écriture collaborative, tels que les concours d’écriture en classe, favorisent un engagement accru des élèves dans le processus d’écriture. En impliquant activement les élèves dans la planification, la rédaction et la révision de leurs textes, il nous est possible en tant qu’enseignant cultiver un sentiment de responsabilité et de propriété vis-à-vis de leur travail, ce qui se traduit souvent par une motivation accrue pour réussir. Les choses deviennent concrètes grâce à ce but commun !
+    HEREDOC
+
+    @long_difficult_text = <<~HEREDOC
+      L'objectif de cette thèse est l'étude de la relation entre la capacité de la mémoire de travail et la compréhension de l'écrit chez l'enfant. Pour comprendre un texte, le lecteur doit construire une représentation mentale cohérente du contenu du texte. Cette élaboration dépend d'une capacité d'intégration des informations. Cette capacité d'intégration est dénommée mémoire de travail. La mémoire de travail est définie comme un système assurant le stockage temporaire d'informations durant un certain traitement. Les expériences rapportées dans cette thèse montrent que l'efficience de la compréhension de l'écrit chez l'enfant dépend de la capacité de la mémoire de travail. Plus précisément, la capacité de la mémoire de travail apparait comme un prédicteur significatif de la compréhension de l'écrit à partir du moment où l'enfant maitrise les règles de conversion graphophonologique, c'est à dire à partir de la troisième année scolaire (neuf ans). La capacité de la mémoire de travail devient alors un prédicteur spécifique et important de la compréhension de l'écrit, compare à l'efficience de la lecture et au vocabulaire. Par ailleurs, les résultats permettent de caractériser la nature de cette relation sur plusieurs aspects. Ils mettent en évidence les contraintes imposées par la capacité de la mémoire de travail sur une opération psycholinguistique particulière, le traitement des pronoms. De plus, ils spécifient la nature des ressources impliquées dans le langage qui sont mesurées par la capacité de la mémoire de travail. Ces ressources apparaissent relativement spécialisées dans le traitement du langage. Enfin, une nouvelle orientation de recherches est proposée visant à préciser les processus attentionnels de base qui pourraient sous-tendre la relation observée entre compréhension de l'écrit et mémoire travail. Il pourrait s'agir en particulier d'un processus d'inhibition dont le rôle est mis en évidence chez les enfants de dix ans.
+    HEREDOC
     @processor = TextMetrics::Processors::French.new(text: @very_easy_text)
   end
 
@@ -85,6 +97,18 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     @processor = TextMetrics::Processors::French.new(text: text)
 
     assert_equal 3.1, @processor.smog_index
+  end
+
+  def test_coleman_liau_index
+    @processor = TextMetrics::Processors::French.new(text: @long_easy_text)
+
+    long_easy_text_coleman_liau_index = @processor.coleman_liau_index
+    assert_equal 14.05, long_easy_text_coleman_liau_index
+
+    @processor = TextMetrics::Processors::French.new(text: @long_difficult_text)
+
+    long_difficult_text_coleman_liau_index = @processor.coleman_liau_index
+    assert long_difficult_text_coleman_liau_index > long_easy_text_coleman_liau_index
   end
 
   def test_flesch_reading_ease_95

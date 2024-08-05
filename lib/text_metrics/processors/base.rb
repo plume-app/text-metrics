@@ -96,6 +96,13 @@ module TextMetrics
         end
       end
 
+      def coleman_liau_index
+        letters = (letters_per_word_average * 100).round(2)
+        sentences = (1.to_f / words_per_sentence_average * 100).round(2)
+        coleman = 0.0588 * letters - 0.296 * sentences - 15.8
+        coleman.round(2)
+      end
+
       # tokenizers
 
       def words
