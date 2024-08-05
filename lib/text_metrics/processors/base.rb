@@ -83,6 +83,19 @@ module TextMetrics
         raise NotImplementedError
       end
 
+      def smog_index
+        if sentences_count >= 3
+          begin
+            smog = 1.043 * Math.sqrt(30.0 * poly_syllabes_count / sentences_count) + 3.1291
+            smog.round(1)
+          rescue ZeroDivisionError
+            0.0
+          end
+        else
+          0.0
+        end
+      end
+
       # tokenizers
 
       def words

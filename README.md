@@ -14,7 +14,6 @@ At this point the main language supported are English and French.
 
 _Basic metrics:_
 
-
 - [x] words count
 - [x] characters count
 - [x] sentences count
@@ -27,6 +26,7 @@ _Readability tests:_
 
 - [x] Flesch Reading Ease
 - [x] Flesch-Kincaid Grade Level
+- [x] Smog Index
 - [ ] Gunning Fog Index
 - [ ] Coleman-Liau Index
 
