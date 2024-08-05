@@ -28,6 +28,28 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 1.7, all[:flesch_kincaid_grade]
   end
 
+  def test_word_count
+    text = "Je suis 4 billevesées 😆 ♥️!"
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 3, @processor.words_count
+
+    text = "Ici, 3 termes"
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 2, @processor.words_count
+
+    text = "Dix mots à moi ; dans cette phrase en tout cas."
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 10, @processor.words_count
+
+    text = "J'ai une apostrophe, et pourtant sept mots."
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 7, @processor.words_count
+
+    text = "eux-mêmes ne sont pas des mots"
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 6, @processor.words_count
+  end
+
   def test_syllables_count
     assert_equal 25, @processor.syllables_count
   end
@@ -72,12 +94,12 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert @processor.flesch_reading_ease <= 70
   end
 
-  def test_flesch_reading_ease_45
+  def test_flesch_reading_ease_40
     text = "La théorie de la relativité restreinte, formulée par Albert Einstein en 1905, postule que les lois de la physique sont invariantes dans tous les référentiels inertiels et que la vitesse de la lumière dans le vide est constante, indépendamment du mouvement de la source ou de l'observateur. Cette théorie a profondément modifié notre compréhension de l'espace et du temps."
     @processor = TextMetrics::Processors::French.new(text: text)
 
-    assert @processor.flesch_reading_ease >= 40
-    assert @processor.flesch_reading_ease <= 50
+    assert @processor.flesch_reading_ease >= 35
+    assert @processor.flesch_reading_ease <= 45
   end
 
   def test_flesch_reading_ease_30

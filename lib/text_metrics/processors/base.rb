@@ -72,18 +72,23 @@ module TextMetrics
         0.0
       end
 
-      private
-
-      def hyphen_dictionary
-        raise NotImplementedError
-      end
-
       def words
-        @words ||= text.gsub(/[.?!;,]/, "").split
+        @words ||= begin
+          normalized_text = text.downcase.strip
+
+          # Split the sentence into words, including hyphenated words, and excluding numbers
+          normalized_text.scan(/\b[A-Za-zÀ-ÖØ-öø-ÿ'-]+\b/)
+        end
       end
 
       def sentences
         @sentences ||= text.scan(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|!)(?=\s|$)/)
+      end
+
+      private
+
+      def hyphen_dictionary
+        raise NotImplementedError
       end
     end
   end
