@@ -41,9 +41,7 @@ module TextMetrics
       end
 
       def syllables_count
-        return 0 if text.empty?
-
-        words.sum { |word| hyphen_dictionary.visualise(word).count("-") + 1 }
+        raise NotImplementedError
       end
 
       # _average methods
@@ -71,6 +69,17 @@ module TextMetrics
       rescue ZeroDivisionError
         0.0
       end
+
+      # readability scores
+      def flesch_reading_ease
+        raise NotImplementedError
+      end
+
+      def flesch_kincaid_grade
+        raise NotImplementedError
+      end
+
+      # tokenizers
 
       def words
         @words ||= begin

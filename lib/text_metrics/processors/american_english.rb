@@ -20,6 +20,12 @@ module TextMetrics
         flesch.round(1)
       end
 
+      def syllables_count
+        return 0 if text.empty?
+
+        words.sum { |word| hyphen_dictionary.visualise(word).count("-") + 1 }
+      end
+
       private
 
       def hyphen_dictionary
