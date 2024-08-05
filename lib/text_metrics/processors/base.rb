@@ -103,6 +103,15 @@ module TextMetrics
         coleman.round(2)
       end
 
+      def lix
+        long_words = words.count { |word| word.length > 6 }
+
+        per_long_words = 100.0 * long_words / words_count
+        lix = words_per_sentence_average + per_long_words
+
+        lix.round(2)
+      end
+
       # tokenizers
 
       def words

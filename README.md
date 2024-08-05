@@ -28,6 +28,7 @@ _Readability tests:_
 - [x] Flesch-Kincaid Grade Level
 - [x] Smog Index
 - [x] Coleman-Liau Index
+- [x] Lix Index
 - [ ] Gunning Fog Index
 
 ## Installation

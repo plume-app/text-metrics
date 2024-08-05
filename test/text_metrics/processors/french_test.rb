@@ -111,6 +111,14 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert long_difficult_text_coleman_liau_index > long_easy_text_coleman_liau_index
   end
 
+  def test_lix
+    @processor = TextMetrics::Processors::French.new(text: @very_easy_text)
+    assert (10..20).cover? @processor.lix
+
+    @processor = TextMetrics::Processors::French.new(text: @long_difficult_text)
+    assert (60..70).cover? @processor.lix
+  end
+
   def test_flesch_reading_ease_95
     text = "Le chat dort. Il fait beau. Les oiseaux chantent dans les arbres. C'est l'été. Il n'y a pas de nuages."
     @processor = TextMetrics::Processors::French.new(text: text)
