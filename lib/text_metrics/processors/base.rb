@@ -18,10 +18,13 @@ module TextMetrics
           characters_count: characters_count,
           sentences_count: sentences_count,
           syllables_count: syllables_count,
+          punctuations_count: punctuations_count,
           syllables_per_word_average: syllables_per_word_average,
           letters_per_word_average: letters_per_word_average,
           words_per_sentence_average: words_per_sentence_average,
+          words_per_punctuations_average: words_per_punctuations_average,
           characters_per_sentence_average: characters_per_sentence_average,
+          punctuations_per_sentence_average: punctuations_per_sentence_average,
           flesch_reading_ease: flesch_reading_ease,
           flesch_kincaid_grade: flesch_kincaid_grade,
           lix: lix,
@@ -53,6 +56,10 @@ module TextMetrics
         words.count { |word| count_syllables_in_word(word) >= 3 }
       end
 
+      def punctuations_count
+        punctuations.size
+      end
+
       # _average methods
 
       def syllables_per_word_average
@@ -77,6 +84,18 @@ module TextMetrics
         return 0.0 if characters_count.zero? || sentences_count.zero?
 
         (characters_count.to_f / sentences_count).round(2)
+      end
+
+      def punctuations_per_sentence_average
+        return 0.0 if punctuations_count.zero? || sentences_count.zero?
+
+        (punctuations_count.to_f / sentences_count).round(2)
+      end
+
+      def words_per_punctuations_average
+        return 0.0 if words_count.zero? || punctuations_count.zero?
+
+        (words_count.to_f / punctuations_count).round(2)
       end
 
       # readability scores
@@ -114,10 +133,14 @@ module TextMetrics
         per_long_words = 100.0 * long_words / words_count
         lix = words_per_sentence_average + per_long_words
 
-        lix.round(2)
+        lix.round(2).clamp(0.0, 100.0)
       end
 
       # tokenizers
+      #
+      def punctuations
+        @punctuations ||= text.scan(/[.,!?;:]/)
+      end
 
       def words
         @words ||= begin

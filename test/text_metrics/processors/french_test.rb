@@ -110,6 +110,28 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 0, @processor.poly_syllabes_count
   end
 
+  def test_punctuation_count
+    text = "Le chat dort. Il fait beau."
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 2, @processor.punctuations_count
+
+    text = "Le chat dort. Il fait beau. Les oiseaux chantent, dans les arbres; C'est l'été! Tu vois des nuages?"
+    @processor = TextMetrics::Processors::French.new(text: text)
+    assert_equal 6, @processor.punctuations_count
+  end
+
+  def test_with_long_text_without_punctuation
+    text = "Je m'appelle emie et je suis une fille j'adore l'aventure mais je m'ennuie en ce moment j'en ai rien à faire j'aimerais bien partir en voyage en voyage avec mes amis ou tout seul c'est pas grave en Italie en Allemagne je sais pas et si j'allais en Allemagne ce serait bien je prends mes valises et j'y vais j'ai trouvé un vol pour minuit j'ai le temps de faire mes valises et de envoyer un message à tous mes amis pour leur dire que je m'en vais je vais dans un hôtel ça ira demain matin je monte dans le train mes amis m'accompagnent me dire au revoir et je leur dis à très bientôt je reviendrai avec du récit plein la voix je suis prête à m'en aller le train est là je dis à mes amis au revoir une fois arrivé en Allemagne dans mon hôtel je regarde je te l'ai fermé j'attends que la porte une personne en capuchonner m'ouvre la porte et me dit entre si tu veux mourir et je m'enfuis en courant une fois caché dans une petite ruelle très sombre je me dis qui est-ce il fait peur noir sombre où est-ce que je vais dormir moi je sais je vais faire du porte-à-porte ah zut le revoilà il me suit je cours à toutes les portes vite vite vite est-ce que vous voulez bien que je dorme chez vous oui bien sûr entre je rentre et là dans la chambre que m'indique la dame je vois un capuchonner assis sur le lit il enlève sa capuche et finalement c'est son fils un gentil garçon de 5 ou 6 ans qui était monté sur les épaules et ça de sa sœur qui avait 6 ans quel frayeur plus jamais ça les enfants."
+
+    @processor = TextMetrics::Processors::French.new(text: text)
+
+    assert (0..100).cover? @processor.flesch_reading_ease
+    assert (0..20).cover? @processor.flesch_kincaid_grade
+    assert (0..20).cover? @processor.smog_index
+    assert (0..20).cover? @processor.coleman_liau_index
+    assert (0..100).cover? @processor.lix
+  end
+
   def test_smog_index
     text = "Le chat dort. Il fait beau. Les oiseaux chantent dans les arbres. C'est l'été. Il n'y a pas de nuages."
     @processor = TextMetrics::Processors::French.new(text: text)

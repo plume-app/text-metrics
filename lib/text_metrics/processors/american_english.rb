@@ -10,7 +10,7 @@ module TextMetrics
         syllables_per_word = syllables_per_word_average
         flesch = 206.835 - 1.015 * sentence_length - 84.6 * syllables_per_word
 
-        [100.0, flesch.round(2)].min
+        flesch.round(2).clamp(0.0, 100.0)
       end
 
       def flesch_kincaid_grade
@@ -18,7 +18,7 @@ module TextMetrics
         syllables_per_word = syllables_per_word_average
         flesch = 0.39 * sentence_length + 11.8 * syllables_per_word - 15.59
 
-        [1.0, flesch.round(1)].max
+        flesch.round(1).clamp(0.0, 18.0)
       end
 
       private
