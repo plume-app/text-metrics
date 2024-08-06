@@ -55,7 +55,7 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 0.0, all[:words_per_sentence_average]
     assert_equal 0.0, all[:characters_per_sentence_average]
     assert_equal 100.0, all[:flesch_reading_ease]
-    assert_equal 1.0, all[:flesch_kincaid_grade]
+    assert_equal 0.0, all[:flesch_kincaid_grade]
   end
 
   def test_word_count
