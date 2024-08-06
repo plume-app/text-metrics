@@ -121,10 +121,12 @@ module TextMetrics
       end
 
       def coleman_liau_index
+        return 0.0 if words_per_sentence_average.zero? || letters_per_word_average.zero?
+
         letters = (letters_per_word_average * 100).round(2)
         sentences = (1.to_f / words_per_sentence_average * 100).round(2)
         coleman = 0.0588 * letters - 0.296 * sentences - 15.8
-        coleman.round(2)
+        coleman.round(2).clamp(0.0, 20.0)
       end
 
       def lix
