@@ -51,27 +51,27 @@ module TextMetrics
       # _average methods
 
       def syllables_per_word_average
+        return 0.0 if words_count.zero? || syllables_count.zero?
+
         (syllables_count.to_f / words_count).round(1)
-      rescue ZeroDivisionError
-        0.0
       end
 
       def letters_per_word_average
+        return 0.0 if words_count.zero? || characters_count.zero?
+
         (characters_count.to_f / words_count).round(2)
-      rescue ZeroDivisionError
-        0.0
       end
 
       def words_per_sentence_average
+        return 0.0 if words_count.zero? || sentences_count.zero?
+
         (words_count.to_f / sentences_count).round(2)
-      rescue ZeroDivisionError
-        0.0
       end
 
       def characters_per_sentence_average
+        return 0.0 if characters_count.zero? || sentences_count.zero?
+
         (characters_count.to_f / sentences_count).round(2)
-      rescue ZeroDivisionError
-        0.0
       end
 
       # readability scores

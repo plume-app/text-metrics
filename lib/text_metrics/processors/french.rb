@@ -23,7 +23,7 @@ module TextMetrics
         syllables_per_word = syllables_per_word_average
         flesch = (0.55 * sentence_length) + (11.76 * syllables_per_word) - 15.79
 
-        flesch.round(1)
+        [1.0, flesch.round(1)].max
       end
 
       private
