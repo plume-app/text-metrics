@@ -128,6 +128,8 @@ module TextMetrics
       end
 
       def lix
+        return 0.0 if words_count.zero?
+
         long_words = words.count { |word| word.length > 6 }
 
         per_long_words = 100.0 * long_words / words_count

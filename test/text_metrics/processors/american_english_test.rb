@@ -32,6 +32,21 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 1.5, all[:flesch_kincaid_grade]
   end
 
+  def test_all_with_trash_text
+    @processor = TextMetrics::Processors::AmericanEnglish.new(text: "bbbbhhhhhhhhhhhhhhhgggttrfter4zsezytrg6it5443z32")
+    all = @processor.all
+    assert_equal 0, all[:words_count]
+    assert_equal 48, all[:characters_count]
+    assert_equal 0, all[:sentences_count]
+    assert_equal 0, all[:syllables_count]
+    assert_equal 0.0, all[:syllables_per_word_average]
+    assert_equal 0.0, all[:letters_per_word_average]
+    assert_equal 0.0, all[:words_per_sentence_average]
+    assert_equal 0.0, all[:characters_per_sentence_average]
+    assert_equal 100.0, all[:flesch_reading_ease]
+    assert_equal 0.0, all[:flesch_kincaid_grade]
+  end
+
   def test_flesch_reading_ease_75
     text = "The sun was shining brightly in the clear blue sky. The children ran around the playground, laughing and playing with their friends. It was a perfect day for a picnic, and families spread out blankets on the grass, enjoying the warm weather."
     @processor = TextMetrics::Processors::AmericanEnglish.new(text: text)
