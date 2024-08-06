@@ -23,7 +23,10 @@ module TextMetrics
           words_per_sentence_average: words_per_sentence_average,
           characters_per_sentence_average: characters_per_sentence_average,
           flesch_reading_ease: flesch_reading_ease,
-          flesch_kincaid_grade: flesch_kincaid_grade
+          flesch_kincaid_grade: flesch_kincaid_grade,
+          lix: lix,
+          smog_index: smog_index,
+          coleman_liau_index: coleman_liau_index
         }
       end
 

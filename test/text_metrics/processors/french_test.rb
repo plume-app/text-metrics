@@ -38,6 +38,9 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert all[:flesch_reading_ease] >= 90
     assert all[:flesch_reading_ease] <= 100
     assert_equal 1.7, all[:flesch_kincaid_grade]
+    assert_equal 14.0, all[:lix]
+    assert_equal 3.1, all[:smog_index]
+    assert_equal 1.2, all[:coleman_liau_index]
   end
 
   def test_all_with_trash_text
