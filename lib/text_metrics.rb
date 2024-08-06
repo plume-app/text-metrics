@@ -17,12 +17,12 @@ module TextMetrics
 
     PROCESSORS = {
       "fr" => Processors::French,
-      "en_US" => Processors::AmericanEnglish
+      "en_us" => Processors::AmericanEnglish
     }
 
     attr_reader :text, :language, :text_metrics_processor
 
-    def initialize(text:, language: "en_US")
+    def initialize(text:, language: "en_us")
       @text = text
       @language = language
       @text_metrics_processor = PROCESSORS[language].new(text: text)
@@ -35,7 +35,7 @@ module TextMetrics
     end
   end
 
-  def self.new(text:, language: "en_US")
+  def self.new(text:, language: "en_us")
     TextMetrics.new(text: text, language: language)
   end
 end

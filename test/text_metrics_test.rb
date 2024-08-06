@@ -13,7 +13,7 @@ class TextMetricsTest < Minitest::Test
   end
 
   def test_american_english_processor
-    text_metrics = TextMetrics.new(text: "Hello world", language: "en_US")
+    text_metrics = TextMetrics.new(text: "Hello world", language: "en_us")
     assert text_metrics.text_metrics_processor.is_a?(TextMetrics::Processors::AmericanEnglish)
   end
 end
