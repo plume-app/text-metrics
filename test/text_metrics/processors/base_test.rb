@@ -26,6 +26,18 @@ class TextMetrics::Processors::BaseTest < Minitest::Test
     assert_equal 5, count
   end
 
+  def test_sentences_count_with_punctuation_less_text
+    text = "Il fait beau"
+    @processor = TextMetrics::Processors::Base.new(text: text)
+    assert_equal 1, @processor.sentences_count
+  end
+
+  def test_sentences_count_with_empty_text
+    text = ""
+    @processor = TextMetrics::Processors::Base.new(text: text)
+    assert_equal 0, @processor.sentences_count
+  end
+
   def test_letters_per_word_average
     avg = @processor.letters_per_word_average
     assert_equal 4.15, avg

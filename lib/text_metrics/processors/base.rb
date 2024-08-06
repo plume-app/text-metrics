@@ -40,7 +40,9 @@ module TextMetrics
       end
 
       def sentences_count
-        sentences.size
+        return 0 if words_count.zero?
+
+        [1, sentences.size].max
       end
 
       def syllables_count
