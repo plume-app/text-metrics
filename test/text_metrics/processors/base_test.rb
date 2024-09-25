@@ -47,4 +47,12 @@ class TextMetrics::Processors::BaseTest < Minitest::Test
     avg = @processor.words_per_sentence_average
     assert_equal 4.0, avg
   end
+
+  def test_levenshtein_distance
+    processor = TextMetrics::Processors::Base.new(text: "hello world")
+    assert_equal 100, processor.levenshtein_distance_from("hello world")
+    assert (20..25).cover? processor.levenshtein_distance_from("bonjour monde")
+    assert_equal 0, processor.levenshtein_distance_from("hello world", normalize: false)
+    assert_equal 10, processor.levenshtein_distance_from("bonjour monde", normalize: false)
+  end
 end

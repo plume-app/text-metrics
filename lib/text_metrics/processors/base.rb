@@ -140,6 +140,22 @@ module TextMetrics
         lix.round(2).clamp(0.0, 100.0)
       end
 
+      # similarity
+      def levenshtein_distance_from(other_text, normalize: true)
+        distance = levenshtein_distance(@text, other_text)
+        return distance unless normalize
+
+        # Normalize to a score out of 100
+        max_length = [@text.length, other_text.length].max
+        normalized_score = if max_length.zero?
+          100
+        else
+          ((max_length - distance).to_f / max_length) * 100
+        end
+
+        normalized_score.round(2)
+      end
+
       # tokenizers
       #
       def punctuations
@@ -157,6 +173,31 @@ module TextMetrics
 
       def sentences
         @sentences ||= text.scan(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|!)(?=\s|$)/)
+      end
+
+      private
+
+      def levenshtein_distance(s1, s2)
+        distances = Array.new(s1.length + 1) { Array.new(s2.length + 1) }
+
+        (0..s1.length).each { |i| distances[i][0] = i }
+        (0..s2.length).each { |j| distances[0][j] = j }
+
+        (1..s1.length).each do |i|
+          (1..s2.length).each do |j|
+            distances[i][j] = if s1[i - 1] == s2[j - 1]
+              distances[i - 1][j - 1]
+            else
+              [
+                distances[i - 1][j],    # Deletion
+                distances[i][j - 1],    # Insertion
+                distances[i - 1][j - 1] # Substitution
+              ].min + 1
+            end
+          end
+        end
+
+        distances[s1.length][s2.length]
       end
     end
   end
