@@ -8,7 +8,7 @@ module TextMetrics
       attr_reader :text, :with_syllable_exceptions
 
       def initialize(text:, with_syllable_exceptions: true)
-        @text = text&.downcase&.squeeze(" ") || ""
+        @text = text&.squeeze(" ") || ""
         @with_syllable_exceptions = with_syllable_exceptions
       end
 
@@ -178,26 +178,34 @@ module TextMetrics
       private
 
       def levenshtein_distance(s1, s2)
-        distances = Array.new(s1.length + 1) { Array.new(s2.length + 1) }
+        m = s1.length
+        n = s2.length
 
-        (0..s1.length).each { |i| distances[i][0] = i }
-        (0..s2.length).each { |j| distances[0][j] = j }
+        # Return if one of the strings is empty
+        return n if m == 0
+        return m if n == 0
 
-        (1..s1.length).each do |i|
-          (1..s2.length).each do |j|
-            distances[i][j] = if s1[i - 1] == s2[j - 1]
-              distances[i - 1][j - 1]
-            else
-              [
-                distances[i - 1][j],    # Deletion
-                distances[i][j - 1],    # Insertion
-                distances[i - 1][j - 1] # Substitution
-              ].min + 1
-            end
+        # Create a matrix
+        matrix = Array.new(m + 1) { Array.new(n + 1) }
+
+        # Initialize the first row and column
+        (0..m).each { |i| matrix[i][0] = i }
+        (0..n).each { |j| matrix[0][j] = j }
+
+        # Fill in the matrix
+        (1..m).each do |i|
+          (1..n).each do |j|
+            cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1
+            matrix[i][j] = [
+              matrix[i - 1][j] + 1,      # Deletion
+              matrix[i][j - 1] + 1,      # Insertion
+              matrix[i - 1][j - 1] + cost  # Substitution
+            ].min
           end
         end
 
-        distances[s1.length][s2.length]
+        # Return the Levenshtein distance
+        matrix[m][n]
       end
     end
   end

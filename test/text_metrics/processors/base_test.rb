@@ -55,4 +55,9 @@ class TextMetrics::Processors::BaseTest < Minitest::Test
     assert_equal 0, processor.levenshtein_distance_from("hello world", normalize: false)
     assert_equal 10, processor.levenshtein_distance_from("bonjour monde", normalize: false)
   end
+
+  def test_levenshtein_distance_with_punctuation
+    processor = TextMetrics::Processors::Base.new(text: "Il fait beau il y a du soleil et pas de nuages")
+    assert_equal 0, processor.levenshtein_distance_from("Il fait beau il y a du soleil et pas de nuages", normalize: false)
+  end
 end
