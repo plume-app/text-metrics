@@ -13,7 +13,7 @@ module TextMetrics
     def_delegators :text_metrics_processor, :words_count, :characters_count, :syllables_count,
       :sentences_count, :words_per_sentence_average, :syllables_per_word_average,
       :letters_per_word_average, :words_per_sentence_average, :characters_per_sentence_average,
-      :flesch_reading_ease, :flesch_kincaid_grade, :all
+      :flesch_reading_ease, :flesch_kincaid_grade, :all, :levenshtein_distance_from
 
     PROCESSORS = {
       "fr" => Processors::French,
