@@ -31,6 +31,17 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_operator processor.syllables_count, :>=, 1
   end
 
+  def test_syllable_database_loads_once_under_concurrency
+    klass = TextMetrics::Processors::AmericanEnglish
+    klass.instance_variable_set(:@syllable_database, nil)
+
+    databases = Array.new(20) { Thread.new { klass.syllable_database } }.map(&:value)
+
+    assert_equal 1, databases.map(&:object_id).uniq.size, "expected the dictionary to load exactly once"
+    assert_predicate databases.first, :frozen?
+    assert_equal 3, databases.first["beautiful"]
+  end
+
   def test_to_h
     all = @processor.to_h
     assert_equal 22, all[:words_count]

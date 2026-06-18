@@ -6,13 +6,20 @@ module TextMetrics
   module Processors
     class AmericanEnglish < TextMetrics::Processors::Base
       SYLLABLE_DATABASE_PATH = File.join(GEM_PATH, "dictionaries/english_word_syllable_database.txt").freeze
+      DATABASE_LOAD_MUTEX = Mutex.new
 
       class << self
-        # CMU Pronouncing Dictionary syllable counts, loaded once and shared across
-        # instances. Lazy so requiring the gem (or using only French/Levenshtein)
-        # doesn't pay the load cost.
+        # CMU Pronouncing Dictionary syllable counts, loaded once and shared across all
+        # instances and threads. Lazy so requiring the gem (or using only
+        # French/Levenshtein) doesn't pay the load cost; the mutex guarantees the file is
+        # parsed exactly once under concurrent first use, and the double check keeps the
+        # common path lock-free. The result is frozen, so concurrent reads are safe.
         def syllable_database
-          @syllable_database ||= load_syllable_database
+          return @syllable_database if @syllable_database
+
+          DATABASE_LOAD_MUTEX.synchronize do
+            @syllable_database ||= load_syllable_database
+          end
         end
 
         private
@@ -23,7 +30,7 @@ module TextMetrics
             word, count = line.split(" ", 2)
             database[word] = count.to_i
           end
-          database
+          database.freeze
         end
       end
 
