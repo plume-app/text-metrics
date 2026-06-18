@@ -8,6 +8,8 @@ Text Metrics is a Ruby library for analysing text. It was inspired by the Python
 
 It gives you the everyday counts you need — words, characters, sentences and syllables — plus readability scores such as Flesch Reading Ease, Flesch-Kincaid Grade Level, SMOG, Gunning Fog, Coleman-Liau Index and LIX. English and French are supported.
 
+It is battle-tested in production on millions of student writings at [Plume](https://plume-app.co).
+
 ## Accurate, dictionary-based syllable counting
 
 Readability scores such as Flesch, Flesch-Kincaid and SMOG depend heavily on syllable counts. Many libraries estimate those counts with hyphenation rules, which are fast but often wrong. Text Metrics starts from real pronunciation data instead:
