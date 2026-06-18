@@ -54,7 +54,7 @@ Text Metrics is not published to RubyGems yet. For now, install it from GitHub:
 
 ```ruby
 # Gemfile
-gem "text-metrics", github: "plume-app/text-metrics", branch: "main"
+gem "text-metrics", "~> 1.0.0"
 ```
 
 ### Supported Ruby versions

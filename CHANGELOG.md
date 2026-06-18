@@ -2,6 +2,10 @@
 
 ## main
 
+## 1.0.0
+- First public release.
+- see `UPGRADING.md` for migration details from the pre-release `0.x` API.
+
 ## ## 1.0.0.beta2
 - Add `gunning_fog_index` to the analyzer metrics and `#to_h` output.
 
