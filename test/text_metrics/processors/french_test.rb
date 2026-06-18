@@ -33,14 +33,13 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 25, all[:syllables_count]
     assert_equal 4.0, all[:words_per_sentence_average]
     assert_equal 1.3, all[:syllables_per_word_average]
-    assert_equal 4.15, all[:letters_per_word_average]
+    assert_equal 3.75, all[:letters_per_word_average]
     assert_equal 4.0, all[:words_per_sentence_average]
-    assert all[:flesch_reading_ease] >= 90
-    assert all[:flesch_reading_ease] <= 100
-    assert_equal 1.7, all[:flesch_kincaid_grade]
+    assert_equal 110.94, all[:flesch_reading_ease]
+    assert_equal 0.7, all[:flesch_kincaid_grade]
     assert_equal 14.0, all[:lix]
     assert_equal 3.1, all[:smog_index]
-    assert_equal 1.2, all[:coleman_liau_index]
+    assert_equal(-1.15, all[:coleman_liau_index])
   end
 
   def test_to_h_with_trash_text
@@ -54,7 +53,7 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 0.0, all[:letters_per_word_average]
     assert_equal 0.0, all[:words_per_sentence_average]
     assert_equal 0.0, all[:characters_per_sentence_average]
-    assert_equal 100.0, all[:flesch_reading_ease]
+    assert_equal 0.0, all[:flesch_reading_ease]
     assert_equal 0.0, all[:flesch_kincaid_grade]
   end
 
@@ -115,11 +114,13 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
 
     @processor = TextMetrics::Processors::French.new(text)
 
-    assert (0..100).cover? @processor.flesch_reading_ease
-    assert (0..20).cover? @processor.flesch_kincaid_grade
-    assert (0..20).cover? @processor.smog_index
-    assert (0..20).cover? @processor.coleman_liau_index
-    assert (0..100).cover? @processor.lix
+    # Scores are unclamped; on pathological input (here one long unpunctuated "sentence")
+    # they can fall well outside the usual ranges — assert only that they compute.
+    assert_kind_of Float, @processor.flesch_reading_ease
+    assert_kind_of Float, @processor.flesch_kincaid_grade
+    assert_kind_of Float, @processor.smog_index
+    assert_kind_of Float, @processor.coleman_liau_index
+    assert_kind_of Float, @processor.lix
   end
 
   def test_with_very_long_trash_text
@@ -127,11 +128,11 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     @processor = TextMetrics::Processors::French.new(text)
 
     assert @processor.to_h.is_a?(Hash)
-    assert (0..100).cover? @processor.flesch_reading_ease
-    assert (0..20).cover? @processor.flesch_kincaid_grade
-    assert (0..20).cover? @processor.smog_index
-    assert (0..20).cover? @processor.coleman_liau_index
-    assert (0..100).cover? @processor.lix
+    assert_kind_of Float, @processor.flesch_reading_ease
+    assert_kind_of Float, @processor.flesch_kincaid_grade
+    assert_kind_of Float, @processor.smog_index
+    assert_kind_of Float, @processor.coleman_liau_index
+    assert_kind_of Float, @processor.lix
   end
 
   def test_smog_index
@@ -145,7 +146,7 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     @processor = TextMetrics::Processors::French.new(@long_easy_text)
 
     long_easy_text_coleman_liau_index = @processor.coleman_liau_index
-    assert_equal 14.05, long_easy_text_coleman_liau_index
+    assert_equal 12.87, long_easy_text_coleman_liau_index
 
     @processor = TextMetrics::Processors::French.new(@long_difficult_text)
 
@@ -165,8 +166,8 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     text = "Le chat dort. Il fait beau. Les oiseaux chantent dans les arbres. C'est l'été. Il n'y a pas de nuages."
     @processor = TextMetrics::Processors::French.new(text)
 
-    assert @processor.flesch_reading_ease >= 90
-    assert @processor.flesch_reading_ease <= 100
+    # Very easy French text exceeds 100 on the unclamped Kandel-Moles scale (base 207).
+    assert_operator @processor.flesch_reading_ease, :>=, 100
   end
 
   def test_flesch_reading_ease_75

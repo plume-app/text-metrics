@@ -51,7 +51,7 @@ Raw corpora and heavy intermediates live in **`data/`** (outside `lib/`, so the 
 ## Conventions
 
 - Linting is **standardrb** (via `require: standard` / `inherit_gem: standard` in `.rubocop.yml`), not vanilla RuboCop style. Keep the `# frozen_string_literal: true` magic comment on every file.
-- Metric methods guard against empty/zero input by returning `0.0` early, and readability scores `.clamp` their output to a sensible range (e.g. Flesch to `0.0..100.0`). Match this defensive style when adding metrics.
+- Metric methods guard against empty/zero input by returning `0.0` early. Readability scores are computed from the full-precision ratios (the private `average_*` helpers and `letters_count`), **not** from the display-rounded public averages — round only the final score. Scores are returned **unclamped** (a Flesch score may exceed 100 or go negative). `letters_count` is alphabetic-only; `characters_count` includes digits/punctuation. `flesch_reading_ease` is the only language-specific readability method (English base 206.835/84.6; French Kandel-Moles 207/73.6); `flesch_kincaid_grade` and the rest live in `Base`.
 - The public surface is intentionally narrow: tokenizers and syllable helpers are private. Adding a public method later is non-breaking; removing one isn't — start private.
 
 ## Releasing

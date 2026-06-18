@@ -37,7 +37,7 @@ class TextMetrics::Processors::BaseTest < Minitest::Test
   end
 
   def test_letters_per_word_average
-    assert_equal 4.15, @processor.letters_per_word_average
+    assert_equal 3.75, @processor.letters_per_word_average
   end
 
   def test_words_per_sentence_average

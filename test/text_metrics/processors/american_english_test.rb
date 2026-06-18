@@ -48,12 +48,11 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 90, all[:characters_count]
     assert_equal 5, all[:sentences_count]
     assert_equal 27, all[:syllables_count]
-    assert_equal 4.4, all[:words_per_sentence_average]
     assert_equal 1.2, all[:syllables_per_word_average]
-    assert_equal 4.09, all[:letters_per_word_average]
+    assert_equal 3.86, all[:letters_per_word_average]
     assert_equal 4.4, all[:words_per_sentence_average]
-    assert_equal 100.0, all[:flesch_reading_ease]
-    assert_equal 0.3, all[:flesch_kincaid_grade]
+    assert_equal 98.54, all[:flesch_reading_ease]
+    assert_equal 0.6, all[:flesch_kincaid_grade]
   end
 
   def test_to_h_keys_match_the_metrics_list
@@ -71,7 +70,7 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 0.0, all[:letters_per_word_average]
     assert_equal 0.0, all[:words_per_sentence_average]
     assert_equal 0.0, all[:characters_per_sentence_average]
-    assert_equal 100.0, all[:flesch_reading_ease]
+    assert_equal 0.0, all[:flesch_reading_ease]
     assert_equal 0.0, all[:flesch_kincaid_grade]
   end
 

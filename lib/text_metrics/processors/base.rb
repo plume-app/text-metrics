@@ -64,27 +64,22 @@ module TextMetrics
         punctuation_marks.size
       end
 
-      # averages
+      # averages — rounded for display only. The readability scores below are computed
+      # from the full-precision ratios (#average_*), not from these rounded values.
       def syllables_per_word_average
-        return 0.0 if words_count.zero? || syllables_count.zero?
-
-        (syllables_count.to_f / words_count).round(1)
+        average_syllables_per_word.round(1)
       end
 
       def letters_per_word_average
-        return 0.0 if words_count.zero? || characters_count.zero?
-
-        (characters_count.to_f / words_count).round(2)
+        average_letters_per_word.round(2)
       end
 
       def words_per_sentence_average
-        return 0.0 if words_count.zero? || sentences_count.zero?
-
-        (words_count.to_f / sentences_count).round(2)
+        average_words_per_sentence.round(2)
       end
 
       def characters_per_sentence_average
-        return 0.0 if characters_count.zero? || sentences_count.zero?
+        return 0.0 if sentences_count.zero?
 
         (characters_count.to_f / sentences_count).round(2)
       end
@@ -101,43 +96,74 @@ module TextMetrics
         (punctuation_count.to_f / sentences_count).round(2)
       end
 
-      # readability scores
+      # readability scores — computed from full-precision ratios, rounded only at the end,
+      # and returned unclamped (a Flesch score can legitimately exceed 100 or go negative).
+
+      # Language-specific; subclasses supply the constants.
       def flesch_reading_ease
         raise NotImplementedError
       end
 
+      # Flesch-Kincaid Grade Level (US school grade). The same formula is used for every
+      # language — there is no validated non-English adaptation.
       def flesch_kincaid_grade
-        raise NotImplementedError
+        return 0.0 if words_count.zero?
+
+        (0.39 * average_words_per_sentence + 11.8 * average_syllables_per_word - 15.59).round(1)
       end
 
       def smog_index
         return 0.0 if sentences_count < 3
 
-        smog = 1.043 * Math.sqrt(30.0 * count_polysyllabic_words / sentences_count) + 3.1291
-        smog.round(1)
+        (1.043 * Math.sqrt(30.0 * count_polysyllabic_words / sentences_count) + 3.1291).round(1)
       rescue ZeroDivisionError
         0.0
       end
 
       def coleman_liau_index
-        return 0.0 if words_per_sentence_average.zero? || letters_per_word_average.zero?
+        return 0.0 if words_count.zero?
 
-        letters = (letters_per_word_average * 100).round(2)
-        sentences = (1.to_f / words_per_sentence_average * 100).round(2)
-        coleman = 0.0588 * letters - 0.296 * sentences - 15.8
-        coleman.round(2).clamp(0.0, 20.0)
+        letters_per_100_words = average_letters_per_word * 100
+        sentences_per_100_words = sentences_count.to_f / words_count * 100
+
+        (0.0588 * letters_per_100_words - 0.296 * sentences_per_100_words - 15.8).round(2)
       end
 
       def lix
         return 0.0 if words_count.zero?
 
         long_words = words.count { |word| word.length > 6 }
-        per_long_words = 100.0 * long_words / words_count
 
-        (words_per_sentence_average + per_long_words).round(2).clamp(0.0, 100.0)
+        (average_words_per_sentence + 100.0 * long_words / words_count).round(2)
       end
 
       private
+
+      # full-precision ratios feeding the readability formulas
+      def average_syllables_per_word
+        return 0.0 if words_count.zero?
+
+        syllables_count.to_f / words_count
+      end
+
+      def average_letters_per_word
+        return 0.0 if words_count.zero?
+
+        letters_count.to_f / words_count
+      end
+
+      def average_words_per_sentence
+        return 0.0 if sentences_count.zero?
+
+        words_count.to_f / sentences_count
+      end
+
+      # Count of alphabetic characters only (letters), as required by Coleman-Liau and the
+      # letters-per-word metric — distinct from #characters_count, which includes digits
+      # and punctuation.
+      def letters_count
+        @letters_count ||= text.scan(/[[:alpha:]]/).size
+      end
 
       # Subclasses provide the language-specific syllable counting.
       def count_syllables_in_word(word)

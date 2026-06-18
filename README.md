@@ -17,6 +17,13 @@ Readability scores (Flesch, Flesch-Kincaid, SMOG) are only as trustworthy as the
 
 This makes syllable-dependent metrics meaningfully more accurate than hyphenation-only implementations, especially on longer and less common words.
 
+### Formula notes
+
+- Scores are computed from full-precision ratios and returned **unclamped** — a Flesch Reading Ease score can legitimately exceed 100 (very easy) or go below 0 (very difficult).
+- **French Flesch Reading Ease** uses the Kandel-Moles (1958) adaptation: `207 − 1.015 × (words/sentences) − 73.6 × (syllables/words)`. Because its base is 207, very easy French text can score slightly above 100.
+- **Flesch-Kincaid Grade** maps to a US school grade and uses the same formula for all languages (there is no validated French adaptation).
+- **Coleman-Liau** counts alphabetic letters only (not digits or punctuation), per its definition.
+
 ## Features
 
 _Basic metrics:_

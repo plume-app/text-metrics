@@ -25,3 +25,13 @@ First public (beta) release. The API was reworked for stability before tagging 1
   (falling back to `text-hyphen` only for out-of-vocabulary words), which is more accurate than
   the previous hyphenation-only approach. English syllable counts and the readability scores
   derived from them may shift slightly versus `0.x`.
+- Readability scores are now computed from full-precision ratios (rounding only the final
+  result) instead of from the display-rounded averages — this removes errors of several points
+  that the intermediate rounding could introduce.
+- Readability scores are no longer clamped: a Flesch score can now exceed 100 or go negative,
+  as the formulas define. (Previously clamped to 0–100 / 0–18 / 0–20.)
+- French Flesch Reading Ease now uses the correct Kandel-Moles base constant `207` (was `206.835`).
+- `flesch_kincaid_grade` now uses the standard US-grade formula for every language; the previous
+  unsourced French coefficients are gone (Flesch-Kincaid Grade has no validated French adaptation).
+- `letters_per_word_average` and the Coleman-Liau index now count alphabetic letters only, not
+  digits and punctuation, per the Coleman-Liau definition.

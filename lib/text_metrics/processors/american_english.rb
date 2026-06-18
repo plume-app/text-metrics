@@ -39,19 +39,9 @@ module TextMetrics
       end
 
       def flesch_reading_ease
-        sentence_length = words_per_sentence_average
-        syllables_per_word = syllables_per_word_average
-        flesch = 206.835 - 1.015 * sentence_length - 84.6 * syllables_per_word
+        return 0.0 if words_count.zero?
 
-        flesch.round(2).clamp(0.0, 100.0)
-      end
-
-      def flesch_kincaid_grade
-        sentence_length = words_per_sentence_average
-        syllables_per_word = syllables_per_word_average
-        flesch = 0.39 * sentence_length + 11.8 * syllables_per_word - 15.59
-
-        flesch.round(1).clamp(0.0, 18.0)
+        (206.835 - 1.015 * average_words_per_sentence - 84.6 * average_syllables_per_word).round(2)
       end
 
       private
