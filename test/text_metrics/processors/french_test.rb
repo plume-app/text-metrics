@@ -83,6 +83,16 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 25, @processor.syllables_count
   end
 
+  def test_syllable_exceptions_load_once_under_concurrency
+    klass = TextMetrics::Processors::French
+    klass.instance_variable_set(:@syllable_exceptions, nil)
+
+    exceptions = Array.new(20) { Thread.new { klass.syllable_exceptions } }.map(&:value)
+
+    assert_equal 1, exceptions.map(&:object_id).uniq.size, "expected the exceptions to load exactly once"
+    assert_predicate exceptions.first, :frozen?
+  end
+
   def test_syllables_count_with_corpus
     words = YAML.load_file("data/french_word_syllable_database.yml")
 
