@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     "bug_tracker_uri" => "https://github.com/plume-app/text-metrics/issues",
-    "changelog_uri" => "https://github.com/plume-app/text-metrics/blob/master/CHANGELOG.md",
+    "changelog_uri" => "https://github.com/plume-app/text-metrics/blob/main/CHANGELOG.md",
     "documentation_uri" => "https://github.com/plume-app/text-metrics",
     "homepage_uri" => "https://github.com/plume-app/text-metrics",
     "source_code_uri" => "https://github.com/plume-app/text-metrics"
