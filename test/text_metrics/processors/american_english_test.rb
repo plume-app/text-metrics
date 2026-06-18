@@ -53,6 +53,7 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 4.4, all[:words_per_sentence_average]
     assert_equal 98.54, all[:flesch_reading_ease]
     assert_equal 0.6, all[:flesch_kincaid_grade]
+    assert_equal 3.6, all[:gunning_fog_index]
   end
 
   def test_to_h_keys_match_the_metrics_list
@@ -72,6 +73,14 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 0.0, all[:characters_per_sentence_average]
     assert_equal 0.0, all[:flesch_reading_ease]
     assert_equal 0.0, all[:flesch_kincaid_grade]
+    assert_equal 0.0, all[:gunning_fog_index]
+  end
+
+  def test_gunning_fog_index
+    text = "Beautiful cats sleep. Dogs run."
+    @processor = TextMetrics::Processors::AmericanEnglish.new(text)
+
+    assert_equal 9.0, @processor.gunning_fog_index
   end
 
   def test_flesch_reading_ease_75

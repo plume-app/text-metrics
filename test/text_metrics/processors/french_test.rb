@@ -39,6 +39,7 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 0.7, all[:flesch_kincaid_grade]
     assert_equal 14.0, all[:lix]
     assert_equal 3.1, all[:smog_index]
+    assert_equal 1.6, all[:gunning_fog_index]
     assert_equal(-1.15, all[:coleman_liau_index])
   end
 
@@ -55,6 +56,7 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_equal 0.0, all[:characters_per_sentence_average]
     assert_equal 0.0, all[:flesch_reading_ease]
     assert_equal 0.0, all[:flesch_kincaid_grade]
+    assert_equal 0.0, all[:gunning_fog_index]
   end
 
   def test_word_count
@@ -130,6 +132,7 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_kind_of Float, @processor.flesch_kincaid_grade
     assert_kind_of Float, @processor.smog_index
     assert_kind_of Float, @processor.coleman_liau_index
+    assert_kind_of Float, @processor.gunning_fog_index
     assert_kind_of Float, @processor.lix
   end
 
@@ -142,6 +145,7 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     assert_kind_of Float, @processor.flesch_kincaid_grade
     assert_kind_of Float, @processor.smog_index
     assert_kind_of Float, @processor.coleman_liau_index
+    assert_kind_of Float, @processor.gunning_fog_index
     assert_kind_of Float, @processor.lix
   end
 
@@ -150,6 +154,13 @@ class TextMetrics::Processors::FrenchTest < Minitest::Test
     @processor = TextMetrics::Processors::French.new(text)
 
     assert_equal 3.1, @processor.smog_index
+  end
+
+  def test_gunning_fog_index
+    text = "Le chat dort. Il fait beau. La communication progresse."
+    @processor = TextMetrics::Processors::French.new(text)
+
+    assert_equal 10.1, @processor.gunning_fog_index
   end
 
   def test_coleman_liau_index

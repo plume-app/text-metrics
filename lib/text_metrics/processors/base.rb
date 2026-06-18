@@ -25,6 +25,7 @@ module TextMetrics
         flesch_kincaid_grade
         lix
         smog_index
+        gunning_fog_index
         coleman_liau_index
       ].freeze
 
@@ -118,6 +119,12 @@ module TextMetrics
         (1.043 * Math.sqrt(30.0 * count_polysyllabic_words / sentences_count) + 3.1291).round(1)
       rescue ZeroDivisionError
         0.0
+      end
+
+      def gunning_fog_index
+        return 0.0 if words_count.zero?
+
+        (0.4 * (average_words_per_sentence + 100.0 * count_polysyllabic_words / words_count)).round(1)
       end
 
       def coleman_liau_index

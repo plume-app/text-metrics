@@ -1,6 +1,9 @@
 # Change log
 
-## master
+## main
+
+## ## 1.0.0.beta2
+- Add `gunning_fog_index` to the analyzer metrics and `#to_h` output.
 
 ## 1.0.0.beta1
 

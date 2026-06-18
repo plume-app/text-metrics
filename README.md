@@ -6,7 +6,7 @@
 
 Text Metrics is a Ruby library for analysing text. It was inspired by the Python Textstat library and the Ruby port of [Textstat](https://github.com/kupolak/textstat).
 
-It gives you the everyday counts you need — words, characters, sentences and syllables — plus readability scores such as Flesch Reading Ease, Flesch-Kincaid Grade Level, SMOG, Coleman-Liau Index and LIX. English and French are supported.
+It gives you the everyday counts you need — words, characters, sentences and syllables — plus readability scores such as Flesch Reading Ease, Flesch-Kincaid Grade Level, SMOG, Gunning Fog, Coleman-Liau Index and LIX. English and French are supported.
 
 ## Accurate, dictionary-based syllable counting
 
@@ -22,6 +22,7 @@ That makes syllable-sensitive scores more reliable, especially for longer or les
 - Scores are computed from full-precision ratios and returned **unclamped**. A Flesch Reading Ease score can legitimately be above 100 for very easy text, or below 0 for very difficult text.
 - **French Flesch Reading Ease** uses the Kandel-Moles (1958) adaptation: `207 − 1.015 × (words/sentences) − 73.6 × (syllables/words)`. Because the formula starts from 207, very easy French text can score slightly above 100.
 - **Flesch-Kincaid Grade** maps to a US school grade. It uses the same formula for every language because there is no validated French adaptation.
+- **Gunning Fog** uses words with three or more syllables as complex words, matching the same syllable counts used by SMOG.
 - **Coleman-Liau** counts alphabetic letters only (not digits or punctuation), per its definition.
 
 ## Features
@@ -41,9 +42,9 @@ _Readability tests:_
 - [x] Flesch Reading Ease
 - [x] Flesch-Kincaid Grade Level
 - [x] Smog Index
+- [x] Gunning Fog Index
 - [x] Coleman-Liau Index
 - [x] Lix Index
-- [ ] Gunning Fog Index
 
 ## Installation
 
@@ -66,19 +67,20 @@ metrics = TextMetrics.new("This gem analyses all kinds of text.")
 # Get every metric at once:
 metrics.to_h
 # {
-#   words_count: 7, characters_count: 30, sentences_count: 1, syllables_count: 11,
-#   punctuation_count: 1, syllables_per_word_average: 1.6, letters_per_word_average: 4.29,
+#   words_count: 7, characters_count: 30, sentences_count: 1, syllables_count: 10,
+#   punctuation_count: 1, syllables_per_word_average: 1.4, letters_per_word_average: 4.14,
 #   words_per_sentence_average: 7.0, characters_per_sentence_average: 30.0,
 #   words_per_punctuation_average: 7.0, punctuation_per_sentence_average: 1.0,
-#   flesch_reading_ease: 64.37, flesch_kincaid_grade: 6.0, lix: 21.29,
-#   smog_index: 0.0, coleman_liau_index: 5.2
+#   flesch_reading_ease: 78.87, flesch_kincaid_grade: 4.0, lix: 21.29,
+#   smog_index: 0.0, gunning_fog_index: 8.5, coleman_liau_index: 4.33
 # }
 
 # Or ask for a single metric:
 metrics.words_count                     # => 7
 metrics.characters_count                # => 30
-metrics.flesch_reading_ease             # => 64.37
-metrics.flesch_kincaid_grade            # => 6.0
+metrics.flesch_reading_ease             # => 78.87
+metrics.flesch_kincaid_grade            # => 4.0
+metrics.gunning_fog_index                # => 8.5
 ```
 
 ### Languages
