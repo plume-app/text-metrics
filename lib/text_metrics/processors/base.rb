@@ -5,6 +5,8 @@ require "text/hyphen"
 module TextMetrics
   module Processors
     class Base
+      GEM_PATH = File.dirname(__FILE__, 2).freeze
+
       # The public metric surface. #to_h and the individual readers are both derived
       # from this list, so they can never drift apart.
       METRICS = %i[
@@ -34,8 +36,9 @@ module TextMetrics
       end
 
       # Every metric in one hash. Single source of truth for the public surface.
+      # Memoized — the analyzer is immutable once built.
       def to_h
-        METRICS.to_h { |metric| [metric, public_send(metric)] }
+        @to_h ||= METRICS.to_h { |metric| [metric, public_send(metric)] }
       end
 
       # counts

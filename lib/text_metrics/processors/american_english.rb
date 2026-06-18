@@ -5,7 +5,6 @@ require "text_metrics/processors/base"
 module TextMetrics
   module Processors
     class AmericanEnglish < TextMetrics::Processors::Base
-      GEM_PATH = File.dirname(__FILE__, 2).freeze
       SYLLABLE_DATABASE_PATH = File.join(GEM_PATH, "dictionaries/english_word_syllable_database.txt").freeze
 
       class << self

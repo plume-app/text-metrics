@@ -18,7 +18,8 @@ module TextMetrics
   # Build an analyzer for +text+ in the given +language+ (:en_us or :fr).
   # Returns the language-specific processor, which exposes every metric and #to_h.
   def self.new(text, language: DEFAULT_LANGUAGE)
-    processor_for(language).new(text, language: language.to_sym)
+    language = resolve_language(language)
+    PROCESSORS.fetch(language).new(text, language: language)
   end
 
   # Raw Levenshtein edit distance between two texts.
@@ -31,10 +32,13 @@ module TextMetrics
     Levenshtein.similarity(text, other)
   end
 
-  def self.processor_for(language)
-    PROCESSORS.fetch(language.to_sym) do
-      raise Error, "Unknown language #{language.inspect}. Available languages: #{PROCESSORS.keys.join(", ")}"
-    end
+  # Coerce to a known language symbol, or raise a helpful error.
+  # Handles nil, strings and symbols without leaking a NoMethodError.
+  def self.resolve_language(language)
+    resolved = language.to_s.to_sym
+    return resolved if PROCESSORS.key?(resolved)
+
+    raise Error, "Unknown language #{language.inspect}. Available languages: #{PROCESSORS.keys.join(", ")}"
   end
-  private_class_method :processor_for
+  private_class_method :resolve_language
 end

@@ -32,6 +32,13 @@ class TextMetricsTest < Minitest::Test
     assert_includes error.message, "en_us"
   end
 
+  def test_nil_language_raises_a_helpful_error
+    error = assert_raises(TextMetrics::Error) do
+      TextMetrics.new("Hello", language: nil)
+    end
+    assert_includes error.message, "en_us"
+  end
+
   def test_text_reflects_what_is_analyzed
     metrics = TextMetrics.new("hello    world")
     assert_equal "hello world", metrics.text

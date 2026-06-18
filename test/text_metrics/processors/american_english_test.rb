@@ -45,6 +45,10 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 0.3, all[:flesch_kincaid_grade]
   end
 
+  def test_to_h_keys_match_the_metrics_list
+    assert_equal TextMetrics::Processors::Base::METRICS, @processor.to_h.keys
+  end
+
   def test_to_h_with_trash_text
     @processor = TextMetrics::Processors::AmericanEnglish.new("bbbbhhhhhhhhhhhhhhhgggttrfter4zsezytrg6it5443z32")
     all = @processor.to_h
