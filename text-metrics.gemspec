@@ -8,8 +8,10 @@ Gem::Specification.new do |s|
   s.authors = ["Adrien POLY"]
   s.email = ["adrienpoly@gmail.com"]
   s.homepage = "https://github.com/plume-app/text-metrics"
-  s.summary = "A Ruby gem to compute various metrics for text"
-  s.description = "A Ruby gem to compute various metrics for text, Currently focusing on English and French"
+  s.summary = "Readability scores and text statistics for English and French"
+  s.description = "Text Metrics computes readability scores (Flesch Reading Ease, " \
+    "Flesch-Kincaid Grade, SMOG, Coleman-Liau, LIX) along with word, sentence, syllable and " \
+    "character statistics, plus Levenshtein distance and similarity. English and French are supported."
 
   s.metadata = {
     "bug_tracker_uri" => "https://github.com/plume-app/text-metrics/issues",
@@ -21,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.files = Dir.glob("lib/**/*") + Dir.glob("bin/**/*") + %w[README.md LICENSE.txt CHANGELOG.md]
+  s.files = Dir.glob("lib/**/*") + Dir.glob("bin/**/*") + %w[README.md LICENSE.txt CHANGELOG.md UPGRADING.md]
   s.require_paths = ["lib"]
   s.required_ruby_version = ">= 3.1"
 

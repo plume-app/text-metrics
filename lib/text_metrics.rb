@@ -1,41 +1,44 @@
 # frozen_string_literal: true
 
 require "text_metrics/version"
-require "text_metrics/processors/french"
+require "text_metrics/levenshtein"
 require "text_metrics/processors/american_english"
-require "forwardable"
+require "text_metrics/processors/french"
 
 module TextMetrics
   class Error < StandardError; end
 
-  class TextMetrics
-    extend Forwardable
-    def_delegators :text_metrics_processor, :words_count, :characters_count, :syllables_count,
-      :sentences_count, :words_per_sentence_average, :syllables_per_word_average,
-      :letters_per_word_average, :words_per_sentence_average, :characters_per_sentence_average,
-      :flesch_reading_ease, :flesch_kincaid_grade, :all, :levenshtein_distance_from
+  DEFAULT_LANGUAGE = :en_us
 
-    PROCESSORS = {
-      "fr" => Processors::French,
-      "en_us" => Processors::AmericanEnglish
-    }
+  PROCESSORS = {
+    en_us: Processors::AmericanEnglish,
+    fr: Processors::French
+  }.freeze
 
-    attr_reader :text, :language, :text_metrics_processor
-
-    def initialize(text:, language: "en_us")
-      @text = text
-      @language = language
-      @text_metrics_processor = PROCESSORS[language].new(text: text)
-    end
-
-    private
-
-    def processor_for(language)
-      PROCESSORS[language] || raise("Unknown language: #{language}, available languages: #{PROCESSORS.keys}")
-    end
+  # Build an analyzer for +text+ in the given +language+ (:en_us or :fr).
+  # Returns the language-specific processor, which exposes every metric and #to_h.
+  def self.new(text, language: DEFAULT_LANGUAGE)
+    language = resolve_language(language)
+    PROCESSORS.fetch(language).new(text, language: language)
   end
 
-  def self.new(text:, language: "en_us")
-    TextMetrics.new(text: text, language: language)
+  # Raw Levenshtein edit distance between two texts.
+  def self.distance(text, other)
+    Levenshtein.distance(text, other)
   end
+
+  # Levenshtein similarity between two texts, as a 0–100 score (100.0 == identical).
+  def self.similarity(text, other)
+    Levenshtein.similarity(text, other)
+  end
+
+  # Coerce to a known language symbol, or raise a helpful error.
+  # Handles nil, strings and symbols without leaking a NoMethodError.
+  def self.resolve_language(language)
+    resolved = language.to_s.to_sym
+    return resolved if PROCESSORS.key?(resolved)
+
+    raise Error, "Unknown language #{language.inspect}. Available languages: #{PROCESSORS.keys.join(", ")}"
+  end
+  private_class_method :resolve_language
 end

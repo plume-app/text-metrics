@@ -5,7 +5,7 @@ require "text_metrics"
 require "yaml"
 require "csv"
 
-csv = CSV.read("lib/text_metrics/dictionnaries/lexique-383.csv", headers: true)
+csv = CSV.read("data/lexique-383.csv", headers: true)
 WORDS_TO_IGNORE = ["etc.", "i.e.", "p.", "p.m."]
 
 hash = {}
@@ -17,4 +17,4 @@ csv.each do |row|
   hash[row["1_ortho"]] = syllables_count
 end
 
-File.write("lib/text_metrics/dictionnaries/french_word_syllable_database.yml", hash.to_yaml)
+File.write("data/french_word_syllable_database.yml", hash.to_yaml)
