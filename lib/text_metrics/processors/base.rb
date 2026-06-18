@@ -5,41 +5,46 @@ require "text/hyphen"
 module TextMetrics
   module Processors
     class Base
-      attr_reader :text, :with_syllable_exceptions
+      # The public metric surface. #to_h and the individual readers are both derived
+      # from this list, so they can never drift apart.
+      METRICS = %i[
+        words_count
+        characters_count
+        sentences_count
+        syllables_count
+        punctuation_count
+        syllables_per_word_average
+        letters_per_word_average
+        words_per_sentence_average
+        characters_per_sentence_average
+        words_per_punctuation_average
+        punctuation_per_sentence_average
+        flesch_reading_ease
+        flesch_kincaid_grade
+        lix
+        smog_index
+        coleman_liau_index
+      ].freeze
 
-      def initialize(text:, with_syllable_exceptions: true)
-        @text = text&.squeeze(" ") || ""
-        @with_syllable_exceptions = with_syllable_exceptions
+      attr_reader :text, :language
+
+      def initialize(text, language: nil)
+        @text = (text || "").squeeze(" ")
+        @language = language
       end
 
-      def all
-        @all ||= {
-          words_count: words_count,
-          characters_count: characters_count,
-          sentences_count: sentences_count,
-          syllables_count: syllables_count,
-          punctuations_count: punctuations_count,
-          syllables_per_word_average: syllables_per_word_average,
-          letters_per_word_average: letters_per_word_average,
-          words_per_sentence_average: words_per_sentence_average,
-          words_per_punctuations_average: words_per_punctuations_average,
-          characters_per_sentence_average: characters_per_sentence_average,
-          punctuations_per_sentence_average: punctuations_per_sentence_average,
-          flesch_reading_ease: flesch_reading_ease,
-          flesch_kincaid_grade: flesch_kincaid_grade,
-          lix: lix,
-          smog_index: smog_index,
-          coleman_liau_index: coleman_liau_index
-        }
+      # Every metric in one hash. Single source of truth for the public surface.
+      def to_h
+        METRICS.to_h { |metric| [metric, public_send(metric)] }
       end
 
-      # _count methods
-      def characters_count(ignore_spaces: true)
-        ignore_spaces ? text.delete(" ").length : text.length
-      end
-
+      # counts
       def words_count
         words.size
+      end
+
+      def characters_count(ignore_spaces: true)
+        ignore_spaces ? text.delete(" ").length : text.length
       end
 
       def sentences_count
@@ -52,16 +57,11 @@ module TextMetrics
         words.sum { |word| count_syllables_in_word(word) }
       end
 
-      def poly_syllabes_count
-        words.count { |word| count_syllables_in_word(word) >= 3 }
+      def punctuation_count
+        punctuation_marks.size
       end
 
-      def punctuations_count
-        punctuations.size
-      end
-
-      # _average methods
-
+      # averages
       def syllables_per_word_average
         return 0.0 if words_count.zero? || syllables_count.zero?
 
@@ -86,16 +86,16 @@ module TextMetrics
         (characters_count.to_f / sentences_count).round(2)
       end
 
-      def punctuations_per_sentence_average
-        return 0.0 if punctuations_count.zero? || sentences_count.zero?
+      def words_per_punctuation_average
+        return 0.0 if words_count.zero? || punctuation_count.zero?
 
-        (punctuations_count.to_f / sentences_count).round(2)
+        (words_count.to_f / punctuation_count).round(2)
       end
 
-      def words_per_punctuations_average
-        return 0.0 if words_count.zero? || punctuations_count.zero?
+      def punctuation_per_sentence_average
+        return 0.0 if punctuation_count.zero? || sentences_count.zero?
 
-        (words_count.to_f / punctuations_count).round(2)
+        (punctuation_count.to_f / sentences_count).round(2)
       end
 
       # readability scores
@@ -108,16 +108,12 @@ module TextMetrics
       end
 
       def smog_index
-        if sentences_count >= 3
-          begin
-            smog = 1.043 * Math.sqrt(30.0 * poly_syllabes_count / sentences_count) + 3.1291
-            smog.round(1)
-          rescue ZeroDivisionError
-            0.0
-          end
-        else
-          0.0
-        end
+        return 0.0 if sentences_count < 3
+
+        smog = 1.043 * Math.sqrt(30.0 * count_polysyllabic_words / sentences_count) + 3.1291
+        smog.round(1)
+      rescue ZeroDivisionError
+        0.0
       end
 
       def coleman_liau_index
@@ -133,79 +129,38 @@ module TextMetrics
         return 0.0 if words_count.zero?
 
         long_words = words.count { |word| word.length > 6 }
-
         per_long_words = 100.0 * long_words / words_count
-        lix = words_per_sentence_average + per_long_words
 
-        lix.round(2).clamp(0.0, 100.0)
+        (words_per_sentence_average + per_long_words).round(2).clamp(0.0, 100.0)
       end
 
-      # similarity
-      def levenshtein_distance_from(other_text, normalize: true)
-        distance = levenshtein_distance(@text, other_text)
-        return distance unless normalize
+      private
 
-        # Normalize to a score out of 100
-        max_length = [@text.length, other_text.length].max
-        normalized_score = if max_length.zero?
-          100
-        else
-          ((max_length - distance).to_f / max_length) * 100
-        end
+      # Subclasses provide the language-specific syllable counting.
+      def count_syllables_in_word(word)
+        raise NotImplementedError
+      end
 
-        normalized_score.round(2)
+      def count_polysyllabic_words
+        words.count { |word| count_syllables_in_word(word) >= 3 }
       end
 
       # tokenizers
-      #
-      def punctuations
-        @punctuations ||= text.scan(/[.,!?;:]/)
+      def punctuation_marks
+        @punctuation_marks ||= text.scan(/[.,!?;:]/)
       end
 
       def words
         @words ||= begin
           normalized_text = text.downcase.strip
 
-          # Split the sentence into words, including hyphenated words, and excluding numbers
+          # Split into words, including hyphenated words, and excluding numbers
           normalized_text.scan(/\b[A-Za-zÀ-ÖØ-öø-ÿ'-]+\b/)
         end
       end
 
       def sentences
         @sentences ||= text.scan(/(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|!)(?=\s|$)/)
-      end
-
-      private
-
-      def levenshtein_distance(s1, s2)
-        m = s1.length
-        n = s2.length
-
-        # Return if one of the strings is empty
-        return n if m == 0
-        return m if n == 0
-
-        # Create a matrix
-        matrix = Array.new(m + 1) { Array.new(n + 1) }
-
-        # Initialize the first row and column
-        (0..m).each { |i| matrix[i][0] = i }
-        (0..n).each { |j| matrix[0][j] = j }
-
-        # Fill in the matrix
-        (1..m).each do |i|
-          (1..n).each do |j|
-            cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1
-            matrix[i][j] = [
-              matrix[i - 1][j] + 1,      # Deletion
-              matrix[i][j - 1] + 1,      # Insertion
-              matrix[i - 1][j - 1] + cost  # Substitution
-            ].min
-          end
-        end
-
-        # Return the Levenshtein distance
-        matrix[m][n]
       end
     end
   end

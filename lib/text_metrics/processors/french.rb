@@ -7,8 +7,15 @@ module TextMetrics
   module Processors
     class French < TextMetrics::Processors::Base
       GEM_PATH = File.dirname(__FILE__, 2).freeze
-      SYLLABLE_EXCEPTIONS_PATH = File.join(GEM_PATH, "dictionnaries/french_word_syllable_exceptions.yml").freeze
+      SYLLABLE_EXCEPTIONS_PATH = File.join(GEM_PATH, "dictionaries/french_word_syllable_exceptions.yml").freeze
       SYLLABLE_EXCEPTIONS = YAML.load_file(SYLLABLE_EXCEPTIONS_PATH).freeze
+
+      # +with_syllable_exceptions+ is an internal toggle used by the dictionary-generation
+      # scripts to run the bare heuristic; the public API always leaves it on.
+      def initialize(text, language: :fr, with_syllable_exceptions: true)
+        super(text, language: language)
+        @with_syllable_exceptions = with_syllable_exceptions
+      end
 
       def flesch_reading_ease
         sentence_length = words_per_sentence_average
@@ -27,6 +34,8 @@ module TextMetrics
       end
 
       private
+
+      attr_reader :with_syllable_exceptions
 
       def count_syllables_in_word(word)
         return SYLLABLE_EXCEPTIONS[word].to_i if with_syllable_exceptions && SYLLABLE_EXCEPTIONS.key?(word)
