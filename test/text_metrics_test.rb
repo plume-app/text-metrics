@@ -7,6 +7,12 @@ class TextMetricsTest < Minitest::Test
     refute_nil ::TextMetrics::VERSION
   end
 
+  def test_loadable_by_the_hyphenated_gem_name
+    # Bundler auto-requires the gem name as-is (`require "text-metrics"`); the shim must load.
+    require "text-metrics"
+    assert defined?(TextMetrics::VERSION)
+  end
+
   def test_defaults_to_american_english
     metrics = TextMetrics.new("Hello world")
     assert_kind_of TextMetrics::Processors::AmericanEnglish, metrics
