@@ -4,37 +4,37 @@
 
 # Text Metrics
 
-Text Metrics is a Ruby library for text analysis. It is inspired from Textstat library in Python and the Ruby port of [Textstat](https://github.com/kupolak/textstat).
+Text Metrics is a Ruby library for analysing text. It was inspired by the Python Textstat library and the Ruby port of [Textstat](https://github.com/kupolak/textstat).
 
-In addition to basic metrics it also provides readability tests like Flesch Reading Ease, Flesch-Kincaid Grade Level, SMOG, Coleman-Liau Index and LIX. The main languages supported are English and French.
+It gives you the everyday counts you need — words, characters, sentences and syllables — plus readability scores such as Flesch Reading Ease, Flesch-Kincaid Grade Level, SMOG, Coleman-Liau Index and LIX. English and French are supported.
 
 ## Accurate, dictionary-based syllable counting
 
-Readability scores (Flesch, Flesch-Kincaid, SMOG) are only as trustworthy as the syllable counts they are built on — and the hyphenation heuristics most libraries rely on get a lot of words wrong. Text Metrics counts syllables from real pronunciation dictionaries instead:
+Readability scores such as Flesch, Flesch-Kincaid and SMOG depend heavily on syllable counts. Many libraries estimate those counts with hyphenation rules, which are fast but often wrong. Text Metrics starts from real pronunciation data instead:
 
-- **English** uses the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict): pronunciation-derived syllable counts for ~126,000 words, falling back to hyphenation only for out-of-vocabulary words. Benchmarked against CMUdict as ground truth, the common hyphenation-only approach returns the **wrong** syllable count for **~46% of dictionary words** — Text Metrics uses the reference count directly.
-- **French** uses counts derived from the [Lexique](http://www.lexique.org/) database, with a vowel heuristic patched by an exceptions list for the words it gets wrong.
+- **English** uses the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict), which provides pronunciation-derived syllable counts for about 126,000 words. Hyphenation is only used when a word is not in the dictionary. Against CMUdict as ground truth, a hyphenation-only approach gets the syllable count wrong for about **46% of dictionary words**.
+- **French** uses counts derived from the [Lexique](http://www.lexique.org/) database, plus a vowel heuristic and an exceptions list for the words the heuristic misses.
 
-This makes syllable-dependent metrics meaningfully more accurate than hyphenation-only implementations, especially on longer and less common words.
+That makes syllable-sensitive scores more reliable, especially for longer or less common words.
 
 ### Formula notes
 
-- Scores are computed from full-precision ratios and returned **unclamped** — a Flesch Reading Ease score can legitimately exceed 100 (very easy) or go below 0 (very difficult).
-- **French Flesch Reading Ease** uses the Kandel-Moles (1958) adaptation: `207 − 1.015 × (words/sentences) − 73.6 × (syllables/words)`. Because its base is 207, very easy French text can score slightly above 100.
-- **Flesch-Kincaid Grade** maps to a US school grade and uses the same formula for all languages (there is no validated French adaptation).
+- Scores are computed from full-precision ratios and returned **unclamped**. A Flesch Reading Ease score can legitimately be above 100 for very easy text, or below 0 for very difficult text.
+- **French Flesch Reading Ease** uses the Kandel-Moles (1958) adaptation: `207 − 1.015 × (words/sentences) − 73.6 × (syllables/words)`. Because the formula starts from 207, very easy French text can score slightly above 100.
+- **Flesch-Kincaid Grade** maps to a US school grade. It uses the same formula for every language because there is no validated French adaptation.
 - **Coleman-Liau** counts alphabetic letters only (not digits or punctuation), per its definition.
 
 ## Features
 
 _Basic metrics:_
 
-- [x] words count
-- [x] characters count
-- [x] sentences count
-- [x] syllables per word average
-- [x] letters per word average
-- [x] sentence length average
-- [x] sentence length (characters) average
+- [x] word count
+- [x] character count
+- [x] sentence count
+- [x] average syllables per word
+- [x] average letters per word
+- [x] average words per sentence
+- [x] average characters per sentence
 
 _Readability tests:_
 
@@ -47,7 +47,7 @@ _Readability tests:_
 
 ## Installation
 
-No official release yet, but you can install it from GitHub:
+Text Metrics is not published to RubyGems yet. For now, install it from GitHub:
 
 ```ruby
 # Gemfile
@@ -63,7 +63,7 @@ gem "text-metrics", github: "plume-app/text-metrics", branch: "main"
 ```ruby
 metrics = TextMetrics.new("This gem analyses all kinds of text.")
 
-# Get every metric at once as a Hash:
+# Get every metric at once:
 metrics.to_h
 # {
 #   words_count: 7, characters_count: 30, sentences_count: 1, syllables_count: 11,
@@ -74,7 +74,7 @@ metrics.to_h
 #   smog_index: 0.0, coleman_liau_index: 5.2
 # }
 
-# Or read each metric on its own:
+# Or ask for a single metric:
 metrics.words_count                     # => 7
 metrics.characters_count                # => 30
 metrics.flesch_reading_ease             # => 64.37
@@ -83,17 +83,17 @@ metrics.flesch_kincaid_grade            # => 6.0
 
 ### Languages
 
-The default language is American English (`:en_us`). Pass `language:` to analyse French:
+American English (`:en_us`) is the default. To analyse French text, pass `language: :fr`:
 
 ```ruby
 TextMetrics.new("Bonjour le monde.", language: :fr)
 ```
 
-An unknown language raises `TextMetrics::Error`.
+Unsupported languages raise `TextMetrics::Error`.
 
 ### Comparing two texts
 
-Levenshtein comparison is between two texts, so it lives on the module itself:
+Levenshtein distance compares two strings, so it is exposed on the `TextMetrics` module:
 
 ```ruby
 TextMetrics.distance("kitten", "sitting")   # => 3      raw edit distance
@@ -102,12 +102,12 @@ TextMetrics.similarity("kitten", "sitting") # => 57.14  0–100 score (100.0 == 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at [https://github.com/plume-app/text-metrics](https://github.com/plume-app/text-metrics).
+Bug reports and pull requests are welcome on [GitHub](https://github.com/plume-app/text-metrics).
 
 ## Credits
 
-This gem was inspired by [Textstat](https://github.com/kupolak/textstat) and [Textstat](https://github.com/textstat/textstat) in Python.
-This gem is generated via [`newgem` template](https://github.com/palkan/newgem) by [@palkan](https://github.com/palkan).
+This gem was inspired by [Textstat](https://github.com/textstat/textstat) in Python and the Ruby [Textstat](https://github.com/kupolak/textstat) port.
+It was generated from the [`newgem` template](https://github.com/palkan/newgem) by [@palkan](https://github.com/palkan).
 
 English syllable counts come from the [CMU Pronouncing Dictionary](https://github.com/cmusphinx/cmudict) (unrestricted use), with [text-hyphen](https://github.com/halostatue/text-hyphen) as a fallback. French syllable counts are derived from [Lexique](http://www.lexique.org/).
 
