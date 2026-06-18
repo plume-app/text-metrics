@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name = "text-metrics"
   s.version = TextMetrics::VERSION
   s.authors = ["Adrien POLY"]
-  s.email = ["Adrien POLY"]
+  s.email = ["adrienpoly@gmail.com"]
   s.homepage = "https://github.com/plume-app/text-metrics"
   s.summary = "A Ruby gem to compute various metrics for text"
   s.description = "A Ruby gem to compute various metrics for text, Currently focusing on English and French"
