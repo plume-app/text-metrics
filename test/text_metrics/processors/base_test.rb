@@ -48,6 +48,42 @@ class TextMetrics::Processors::BaseTest < Minitest::Test
     assert_equal 5, @processor.punctuation_count
   end
 
+  def test_long_words_count
+    # "oiseaux" (7) and "chantent" (8) are the only words longer than six characters.
+    assert_equal 2, @processor.long_words_count
+  end
+
+  def test_type_token_ratio
+    # 20 words, two repeats ("les", "il") => 18 distinct / 20.
+    assert_equal 0.9, @processor.type_token_ratio
+  end
+
+  def test_type_token_ratio_with_empty_text
+    assert_equal 0.0, TextMetrics::Processors::Base.new("").type_token_ratio
+  end
+
+  def test_automated_readability_index
+    # 4.71 * 83 / 20 + 0.5 * (20 / 5) - 21.43 ≈ 0.1
+    assert_equal 0.1, @processor.automated_readability_index
+  end
+
+  def test_automated_readability_index_with_empty_text
+    assert_equal 0.0, TextMetrics::Processors::Base.new("").automated_readability_index
+  end
+
+  def test_reading_time
+    # 20 words at the default 200 wpm => 0.1 minutes.
+    assert_equal 0.1, @processor.reading_time
+  end
+
+  def test_reading_time_accepts_a_custom_wpm
+    assert_equal 0.2, @processor.reading_time(wpm: 100)
+  end
+
+  def test_reading_time_with_empty_text
+    assert_equal 0.0, TextMetrics::Processors::Base.new("").reading_time
+  end
+
   def test_text_is_whitespace_normalized
     assert_equal "a b c", TextMetrics::Processors::Base.new("a   b    c").text
   end

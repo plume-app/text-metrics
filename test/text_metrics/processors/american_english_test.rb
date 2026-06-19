@@ -42,6 +42,11 @@ class TextMetrics::Processors::AmericanEnglishTest < Minitest::Test
     assert_equal 3, databases.first["beautiful"]
   end
 
+  def test_polysyllabic_words_count
+    # "beautiful" (3 syllables) is the only word with three or more syllables.
+    assert_equal 1, @processor.polysyllabic_words_count
+  end
+
   def test_to_h
     all = @processor.to_h
     assert_equal 22, all[:words_count]

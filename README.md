@@ -26,6 +26,8 @@ That makes syllable-sensitive scores more reliable, especially for longer or les
 - **Flesch-Kincaid Grade** maps to a US school grade. It uses the same formula for every language because there is no validated French adaptation.
 - **Gunning Fog** uses words with three or more syllables as complex words, matching the same syllable counts used by SMOG.
 - **Coleman-Liau** counts alphabetic letters only (not digits or punctuation), per its definition.
+- **Automated Readability Index** counts characters (letters, digits and punctuation, spaces excluded), per its original "strokes" definition — so it uses `characters_count`, unlike Coleman-Liau which uses letters only.
+- **Type-token ratio** is distinct-words over total-words and is sensitive to text length: longer texts trend lower because words repeat. Compare it only across texts of similar length.
 
 ## Features
 
@@ -34,10 +36,14 @@ _Basic metrics:_
 - [x] word count
 - [x] character count
 - [x] sentence count
+- [x] polysyllabic word count (three or more syllables)
+- [x] long word count (more than six characters)
 - [x] average syllables per word
 - [x] average letters per word
 - [x] average words per sentence
 - [x] average characters per sentence
+- [x] type-token ratio (lexical diversity)
+- [x] reading time (minutes, configurable words-per-minute)
 
 _Readability tests:_
 
@@ -47,6 +53,7 @@ _Readability tests:_
 - [x] Gunning Fog Index
 - [x] Coleman-Liau Index
 - [x] Lix Index
+- [x] Automated Readability Index
 
 ## Installation
 
@@ -70,11 +77,13 @@ metrics = TextMetrics.new("This gem analyses all kinds of text.")
 metrics.to_h
 # {
 #   words_count: 7, characters_count: 30, sentences_count: 1, syllables_count: 10,
-#   punctuation_count: 1, syllables_per_word_average: 1.4, letters_per_word_average: 4.14,
+#   punctuation_count: 1, polysyllabic_words_count: 1, long_words_count: 1,
+#   syllables_per_word_average: 1.4, letters_per_word_average: 4.14,
 #   words_per_sentence_average: 7.0, characters_per_sentence_average: 30.0,
 #   words_per_punctuation_average: 7.0, punctuation_per_sentence_average: 1.0,
-#   flesch_reading_ease: 78.87, flesch_kincaid_grade: 4.0, lix: 21.29,
-#   smog_index: 0.0, gunning_fog_index: 8.5, coleman_liau_index: 4.33
+#   type_token_ratio: 1.0, flesch_reading_ease: 78.87, flesch_kincaid_grade: 4.0,
+#   lix: 21.29, smog_index: 0.0, gunning_fog_index: 8.5, coleman_liau_index: 4.33,
+#   automated_readability_index: 2.3, reading_time: 0.04
 # }
 
 # Or ask for a single metric:
@@ -83,6 +92,10 @@ metrics.characters_count                # => 30
 metrics.flesch_reading_ease             # => 78.87
 metrics.flesch_kincaid_grade            # => 4.0
 metrics.gunning_fog_index                # => 8.5
+
+# Reading time is in minutes; pass a custom reading pace if you like:
+metrics.reading_time                    # => 0.04   (at the default 200 wpm)
+metrics.reading_time(wpm: 130)          # => 0.05
 ```
 
 ### Languages
@@ -94,6 +107,31 @@ TextMetrics.new("Bonjour le monde.", language: :fr)
 ```
 
 Unsupported languages raise `TextMetrics::Error`.
+
+### Configuration
+
+Global defaults can be set via `TextMetrics.configure`. Call this once at boot time — in a Rails initializer, for example:
+
+```ruby
+TextMetrics.configure do |config|
+  # Words per minute used by #reading_time (default: 200).
+  config.wpm = 250
+end
+```
+
+In a **Rails app**, generate the initializer with:
+
+```sh
+rails generate text_metrics:install
+```
+
+This creates `config/initializers/text_metrics.rb` with the options commented out at their defaults.
+
+Per-call overrides are still supported and always take precedence over the global config:
+
+```ruby
+metrics.reading_time(wpm: 130)
+```
 
 ### Comparing two texts
 

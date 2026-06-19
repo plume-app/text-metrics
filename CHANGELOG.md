@@ -1,6 +1,9 @@
 # Change log
 
 ## main
+- Add five metrics to the analyzer and `#to_h`: `automated_readability_index`,
+  `type_token_ratio` (lexical diversity), `reading_time` (minutes, with a configurable
+  `wpm:`), and the previously-internal `polysyllabic_words_count` and `long_words_count`.
 
 ## 1.0.0
 - First public release.

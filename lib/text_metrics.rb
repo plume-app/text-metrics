@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "text_metrics/version"
+require "text_metrics/configuration"
+require "text_metrics/railtie" if defined?(Rails::Railtie)
 require "text_metrics/levenshtein"
 require "text_metrics/processors/american_english"
 require "text_metrics/processors/french"
@@ -9,6 +11,22 @@ module TextMetrics
   class Error < StandardError; end
 
   DEFAULT_LANGUAGE = :en_us
+
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
+
+    def configure
+      yield configuration
+    end
+
+    private
+
+    def reset_configuration!
+      @configuration = Configuration.new
+    end
+  end
 
   PROCESSORS = {
     en_us: Processors::AmericanEnglish,
