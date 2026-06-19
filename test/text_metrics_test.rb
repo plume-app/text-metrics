@@ -30,6 +30,12 @@ class TextMetricsTest < Minitest::Test
     assert_kind_of TextMetrics::Processors::French, metrics
   end
 
+  def test_en_aliases_en_us
+    metrics = TextMetrics.new("Hello", language: :en)
+    assert_kind_of TextMetrics::Processors::AmericanEnglish, metrics
+    assert_equal :en_us, metrics.language
+  end
+
   def test_unknown_language_raises_a_helpful_error
     error = assert_raises(TextMetrics::Error) do
       TextMetrics.new("Hello", language: :es)

@@ -52,8 +52,11 @@ module TextMetrics
 
   # Coerce to a known language symbol, or raise a helpful error.
   # Handles nil, strings and symbols without leaking a NoMethodError.
+  LANGUAGE_ALIASES = {en: :en_us}.freeze
+
   def self.resolve_language(language)
     resolved = language.to_s.to_sym
+    resolved = LANGUAGE_ALIASES.fetch(resolved, resolved)
     return resolved if PROCESSORS.key?(resolved)
 
     raise Error, "Unknown language #{language.inspect}. Available languages: #{PROCESSORS.keys.join(", ")}"

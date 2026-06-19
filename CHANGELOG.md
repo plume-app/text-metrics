@@ -1,6 +1,7 @@
 # Change log
 
 ## main
+- Accept `:en` as an alias for `:en_us` in `TextMetrics.new`.
 - Add five metrics to the analyzer and `#to_h`: `automated_readability_index`,
   `type_token_ratio` (lexical diversity), `reading_time` (minutes, with a configurable
   `wpm:`), and the previously-internal `polysyllabic_words_count` and `long_words_count`.

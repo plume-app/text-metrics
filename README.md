@@ -100,10 +100,11 @@ metrics.reading_time(wpm: 130)          # => 0.05
 
 ### Languages
 
-American English (`:en_us`) is the default. To analyse French text, pass `language: :fr`:
+American English (`:en_us`) is the default. `:en` is accepted as an alias for `:en_us`. To analyse French text, pass `language: :fr`:
 
 ```ruby
 TextMetrics.new("Bonjour le monde.", language: :fr)
+TextMetrics.new("Hello.", language: :en)    # same as :en_us
 ```
 
 Unsupported languages raise `TextMetrics::Error`.
