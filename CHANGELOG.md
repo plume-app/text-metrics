@@ -3,6 +3,9 @@
 ## main
 - ... TBD ...
 
+## 1.1.1
+- add missing commits from 1.1.0
+
 ## 1.1.0
 - Accept `:en` as an alias for `:en_us` in `TextMetrics.new`.
 - Add five metrics to the analyzer and `#to_h`: `automated_readability_index`,
